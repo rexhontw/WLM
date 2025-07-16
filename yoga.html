@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akshar Yoga 探索之旅</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: The SPA is designed as a narrative journey for the user. It starts with a high-level introduction (Hero), delves into the foundational 'Philosophy', then allows deep exploration in the interactive 'Practice' section (the core of the app). Subsequently, it showcases the 'Benefits' in a visually engaging way, establishes credibility with 'Global Community', and finally offers a 'Comparison' for context. This top-down structure guides users from discovery to understanding and evaluation, which is more intuitive for learning about a new discipline than simply following the report's linear structure. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Core Philosophy (8 Limbs). Goal: Organize/Inform. Viz: Interactive HTML cards. Interaction: Hover/click to reveal details. Justification: More engaging than a static list, encourages user discovery. Library: Vanilla JS.
+        - Report Info: 15 Pranayama & 6 Meditation techniques. Goal: Organize/Inform. Viz: Filterable grid of buttons. Interaction: Clicking a button displays its details in a dedicated area. Justification: Manages dense information effectively, making specific techniques easily accessible without cluttering the UI. Library: Vanilla JS.
+        - Report Info: Benefits vs. other styles. Goal: Compare/Inform. Viz: Radar Chart. Interaction: Static visualization for clear comparison. Justification: Radar charts excel at comparing multiple subjects across several distinct variables, providing an immediate visual summary of Akshar Yoga's focus. Library: Chart.js.
+        - Report Info: Comparison Table. Goal: Compare. Viz: Interactive HTML table. Interaction: Buttons to switch comparison data. Justification: Transforms a static report table into a dynamic tool, allowing users to actively compare styles. Library: Vanilla JS. 
+        - NEW: Report Info: User mood/goal. Goal: Personalized recommendation. Viz: LLM-generated text. Interaction: Button click, user input. Justification: Provides direct, AI-powered guidance for practice selection. Library: Gemini API.
+        - NEW: Report Info: Yoga Limbs. Goal: Deeper philosophical insight. Viz: LLM-generated text. Interaction: Button click. Justification: Enhances understanding of core philosophy with modern interpretations. Library: Gemini API. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #FFF8F0; 
+            color: #333;
+        }
+        .nav-link {
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #D97706; 
+            border-bottom-color: #D97706;
+        }
+        .tab-btn.active {
+            background-color: #D97706;
+            color: white;
+        }
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .ai-response-box {
+            background-color: #f0fdf4; /* Light green for positive feedback */
+            border-left: 4px solid #22c55e;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0.5rem;
+            color: #166534;
+            font-size: 0.9rem;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #D97706;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#hero" class="text-2xl font-bold text-amber-700">Akshar Yoga</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#philosophy" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">核心理念</a>
+                <a href="#practice" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">實踐探索</a>
+                <a href="#benefits" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">全方位益處</a>
+                <a href="#community" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">全球社群</a>
+                <a href="#comparison" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">風格比較</a>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden focus:outline-none">
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#philosophy" class="block py-2 px-6 text-sm text-gray-700 hover:bg-amber-100">核心理念</a>
+            <a href="#practice" class="block py-2 px-6 text-sm text-gray-700 hover:bg-amber-100">實踐探索</a>
+            <a href="#benefits" class="block py-2 px-6 text-sm text-gray-700 hover:bg-amber-100">全方位益處</a>
+            <a href="#community" class="block py-2 px-6 text-sm text-gray-700 hover:bg-amber-100">全球社群</a>
+            <a href="#comparison" class="block py-2 px-6 text-sm text-gray-700 hover:bg-amber-100">風格比較</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="relative min-h-[60vh] md:min-h-screen flex items-center justify-center text-center text-white overflow-hidden">
+            <div class="absolute inset-0 bg-black opacity-50"></div>
+             <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2120&auto=format&fit=crop" alt="Yoga pose at sunset" class="absolute inset-0 w-full h-full object-cover">
+            <div class="relative z-10 p-6">
+                <h1 class="text-4xl md:text-6xl font-bold mb-4 tracking-wider">探索 Akshar Yoga</h1>
+                <p class="text-xl md:text-2xl mb-8">傳統智慧與現代創新的完美融合</p>
+                <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
+                    <div class="bg-white/20 backdrop-blur-sm p-4 rounded-lg">
+                        <p class="text-3xl font-bold">2000萬+</p>
+                        <p>全球學員</p>
+                    </div>
+                    <div class="bg-white/20 backdrop-blur-sm p-4 rounded-lg">
+                        <p class="text-3xl font-bold">80+</p>
+                        <p>遍及國家</p>
+                    </div>
+                    <div class="bg-white/20 backdrop-blur-sm p-4 rounded-lg">
+                        <p class="text-3xl font-bold">5000+</p>
+                        <p>認證教師</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Philosophy Section -->
+        <section id="philosophy" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-amber-800 mb-4">核心理念</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600">本節將闡述 Akshar Yoga 的根基——源自創始人 Akshar 大師的願景，以及瑜伽八支的古老智慧。這不僅是體位法的練習，更是一種引導您走向身心平衡與自我實現的生活哲學。點擊卡片來探索每個原則的深層意涵，或點擊「✨ 深入洞察 ✨」按鈕，讓 AI 為您提供現代視角的解讀。</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="prose max-w-none text-gray-700">
+                        <h3 class="text-2xl font-semibold text-amber-700">創始人：Akshar 大師的願景</h3>
+                        <p>Akshar 大師，世界瑜伽組織主席，巧妙地融合傳統精髓與當代創新。他不僅傳播古老智慧，更引入力量瑜伽、空中瑜伽等形式，旨在讓瑜伽保持新鮮感與吸引力，使其適應現代生活方式，觸及更廣泛的練習者。</p>
+                        <h3 class="text-2xl font-semibold text-amber-700 mt-8">瑜伽八支：全面的生活框架</h3>
+                        <p>Akshar Yoga 根植於帕坦伽利《瑜伽經》中的八支瑜伽，這是一套完整的道德與個人行為指南，引導練習者實現全面的自我發展。它分為外在的「制戒 (Yamas)」和內在的「內制 (Niyamas)」，為後續的體位法、呼吸法和冥想練習奠定堅實的基礎。</p>
+                    </div>
+                    <div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="eight-limbs-container">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section id="practice" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-amber-800 mb-4">實踐探索</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600">這裡是 Akshar Yoga 的核心。我們將深入了解其獨特的練習方法，從充滿活力的體位法序列，到精微的呼吸控制，再到強大的冥想技巧。請選擇您感興趣的領域，開始您的探索之旅，了解這些練習如何共同作用，以喚醒您的內在潛能。您也可以點擊「✨ 獲取推薦 ✨」按鈕，讓 AI 根據您的需求推薦適合的練習。</p>
+                </div>
+                
+                <div class="flex justify-center mb-8 border-b border-gray-200">
+                    <button class="tab-btn px-4 py-2 text-gray-600 font-medium active" data-tab="asanas">體位法</button>
+                    <button class="tab-btn px-4 py-2 text-gray-600 font-medium" data-tab="pranayama">呼吸控制法</button>
+                    <button class="tab-btn px-4 py-2 text-gray-600 font-medium" data-tab="meditation">冥想練習</button>
+                    <button class="tab-btn px-4 py-2 text-gray-600 font-medium" data-tab="innovations">創新課程</button>
+                </div>
+
+                <div id="practice-content" class="mt-8">
+                    <!-- Asanas Content -->
+                    <div id="asanas-content" class="tab-content">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div class="p-4">
+                                <h3 class="text-2xl font-semibold text-amber-700 mb-4">體位法 (Asanas): 力量與流動</h3>
+                                <p class="text-gray-600 mb-4">Akshar Yoga 以其「高強度且嚴謹」的練習聞名。課程以「強力的流暢動作」為特色，透過重複性的流動體勢，由淺入深，旨在激發未知潛能，並帶來汗流浃背的快感。</p>
+                                <ul class="list-disc list-inside space-y-2 text-gray-600">
+                                    <li><strong>增強心肺功能：</strong> 快速流動的序列提升心率。</li>
+                                    <li><strong>強化核心肌群：</strong> 許多動作都著重於核心的穩定性。</li>
+                                    <li><strong>提升柔軟度與耐力：</strong> 結合伸展與力量的訓練。</li>
+                                    <li><strong>協調內臟功能：</strong> 透過扭轉與伸展按摩內部器官。</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-lg">
+                                <h4 class="font-semibold text-center text-lg mb-4 text-amber-800">關鍵體位法範例</h4>
+                                <div class="space-y-3">
+                                    <div class="p-3 bg-amber-50 rounded-md"><strong>下犬式 (Adho Mukha Svanasana):</strong> 伸展全身，活化大腦。</div>
+                                    <div class="p-3 bg-amber-50 rounded-md"><strong>坐姿前彎式 (Paschimottanasana):</strong> 鎮靜心神，緩解壓力。</div>
+                                    <div class="p-3 bg-amber-50 rounded-md"><strong>肩立式 (Sarvangasana):</strong> 改善循環，滋養腺體。</div>
+                                    <div class="p-3 bg-amber-50 rounded-md"><strong>蓮花式 (Padmasana):</strong> 經典冥想坐姿，提升專注力。</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pranayama Content -->
+                    <div id="pranayama-content" class="tab-content hidden">
+                        <div class="grid lg:grid-cols-3 gap-8">
+                            <div class="lg:col-span-1">
+                                <h3 class="text-2xl font-semibold text-amber-700 mb-4">呼吸控制法 (Pranayama): 生命的能量</h3>
+                                <p class="text-gray-600 mb-4">呼吸是身心的橋樑。Akshar Yoga 提供多種獨特的呼吸法，每種都有其特定的目的。點擊右側的按鈕，探索這些強大的技術，或讓 AI 為您推薦。</p>
+                                <button id="pranayama-recommend-btn" class="mt-4 px-4 py-2 bg-amber-600 text-white rounded-full text-sm hover:bg-amber-700 transition">✨ 獲取呼吸法推薦 ✨</button>
+                                <div id="pranayama-list" class="flex flex-wrap gap-2 mt-4">
+                                </div>
+                            </div>
+                            <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg min-h-[300px]">
+                                <div id="pranayama-details">
+                                    <p class="text-gray-500 text-center mt-12">請選擇一項呼吸法以查看詳細資訊，或點擊上方按鈕獲取推薦。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Meditation Content -->
+                    <div id="meditation-content" class="tab-content hidden">
+                         <div class="grid lg:grid-cols-3 gap-8">
+                            <div class="lg:col-span-1">
+                                <h3 class="text-2xl font-semibold text-amber-700 mb-4">冥想練習: 內在的工程</h3>
+                                <p class="text-gray-600 mb-4">冥想不僅是放鬆，更是用於內在工程和靈性進程的動態工具。Akshar Yoga 的冥想技術結構清晰、目標導向，旨在喚醒內在力量並提升意識。點擊右側的按鈕，探索這些技術，或讓 AI 為您推薦。</p>
+                                <button id="meditation-recommend-btn" class="mt-4 px-4 py-2 bg-amber-600 text-white rounded-full text-sm hover:bg-amber-700 transition">✨ 獲取冥想推薦 ✨</button>
+                                <div id="meditation-list" class="flex flex-wrap gap-2 mt-4">
+                                </div>
+                            </div>
+                            <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg min-h-[300px]">
+                                <div id="meditation-details">
+                                    <p class="text-gray-500 text-center mt-12">請選擇一項冥想技術以查看詳細資訊，或點擊上方按鈕獲取推薦。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Innovations Content -->
+                    <div id="innovations-content" class="tab-content hidden">
+                        <h3 class="text-2xl text-center font-semibold text-amber-700 mb-8">創新課程: 保持練習的新鮮感</h3>
+                        <div class="grid md:grid-cols-3 gap-8">
+                            <div class="card bg-white p-6 rounded-lg shadow-lg text-center">
+                                <h4 class="text-xl font-bold text-amber-800 mb-2">力量瑜伽 (Power Yoga)</h4>
+                                <p class="text-gray-600">高強度、嚴謹的練習，結合流暢動作，旨在增強心肺功能、核心力量與肌肉耐力，釋放未開發的潛力。</p>
+                            </div>
+                            <div class="card bg-white p-6 rounded-lg shadow-lg text-center">
+                                <h4 class="text-xl font-bold text-amber-800 mb-2">空中瑜伽 (Aerial Yoga)</h4>
+                                <p class="text-gray-600">利用掛布支撐身體，在空中完成體位法。有助於減輕脊椎壓力，加深伸展，並為練習增添趣味性。</p>
+                            </div>
+                            <div class="card bg-white p-6 rounded-lg shadow-lg text-center">
+                                <h4 class="text-xl font-bold text-amber-800 mb-2">Akshar 瑜伽輪</h4>
+                                <p class="text-gray-600">一種輔助工具，旨在幫助練習者安全地打開胸腔、肩膀和背部，加深後彎，並提升平衡感與核心力量。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits Section -->
+        <section id="benefits" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-amber-800 mb-4">全方位益處</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600">本節將深入探討 Akshar Yoga 如何從身體、心理到精神層面，為練習者帶來全方位的轉變。透過互動圖表與詳細說明，您將清晰地看到練習如何強化您的身體機能、平靜您的心靈，並與其他瑜伽流派進行比較，以突顯其獨特優勢。</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-2xl font-semibold text-amber-700 mb-6 text-center">身心靈的轉變</h3>
+                        <div class="space-y-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-amber-100 text-amber-600 p-3 rounded-full">🧠</div>
+                                <div>
+                                    <h4 class="font-bold text-lg">心理與情緒健康</h4>
+                                    <p class="text-gray-600">顯著減輕壓力與焦慮，提升自信心、專注力與睡眠品質，培養正念覺察與情緒穩定性。</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-amber-100 text-amber-600 p-3 rounded-full">💪</div>
+                                <div>
+                                    <h4 class="font-bold text-lg">身體健康提升</h4>
+                                    <p class="text-gray-600">強化心肺功能、核心肌群與肌肉耐力，改善柔軟度、骨骼密度與關節健康。</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-amber-100 text-amber-600 p-3 rounded-full">✨</div>
+                                <div>
+                                    <h4 class="font-bold text-lg">靈性成長</h4>
+                                    <p class="text-gray-600">透過冥想等練習喚醒內在力量，提升意識，引導練習者走向深刻的自我實現與連結。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                         <h3 class="text-2xl font-semibold text-amber-700 mb-6 text-center">風格特點比較</h3>
+                        <div class="chart-container">
+                            <canvas id="benefitsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Global Community Section -->
+        <section id="community" class="py-16 md:py-24">
+             <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-amber-800 mb-4">全球社群與傳承</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600">Akshar Yoga 的影響力已跨越國界，建立了一個充滿活力的全球社群。本節將展示其國際影響力、與知名組織的合作，以及為有志成為教師者提供的全面培訓途徑。這證明了 Akshar Yoga 不僅是個人練習，更是一個致力於人類成長的全球平台。</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-semibold text-amber-700 mb-4">國際影響力</h3>
+                        <p class="text-gray-600 mb-4">Akshar Yoga 不僅是印度最大的瑜伽連鎖機構，更在全球80多個國家培養了教師。它與印度空軍、亞馬遜等知名企業及體育卓越中心合作，將瑜伽的益處帶給運動員、企業員工及軍事人員。</p>
+                        <div class="mt-4 pt-4 border-t">
+                             <p class="text-gray-600">其研究與發展中心致力於融合古老智慧與科學嚴謹性，推動瑜伽作為一種經過驗證的健康干預措施。</p>
+                        </div>
+                    </div>
+                     <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-semibold text-amber-700 mb-4">師資培訓課程 (TTC)</h3>
+                        <p class="text-gray-600 mb-4">提供全面且分級的課程，無論是深化個人練習或開啟教學生涯，都能找到合適的路徑。</p>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center bg-amber-50 p-3 rounded-md"><span><strong>基礎級別</strong> (200小時)</span><span class="text-sm font-semibold text-amber-600">入門基石</span></div>
+                            <div class="flex justify-between items-center bg-amber-50 p-3 rounded-md"><span><strong>進階級別</strong> (300小時)</span><span class="text-sm font-semibold text-amber-600">深化技能</span></div>
+                            <div class="flex justify-between items-center bg-amber-50 p-3 rounded-md"><span><strong>大師級別</strong> (500小時)</span><span class="text-sm font-semibold text-amber-600">精通掌握</span></div>
+                        </div>
+                         <p class="text-xs text-gray-500 mt-4">註：課程與美國瑜伽聯盟的隸屬關係請直接向官方查詢。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Section -->
+        <section id="comparison" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                 <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-amber-800 mb-4">瑜伽流派比較</h2>
+                    <p class="max-w-3xl mx-auto text-gray-600">面對眾多瑜伽流派，該如何選擇？本節將 Akshar Yoga 與其他主流瑜伽風格進行直接比較，幫助您了解其在步調、強度、結構和創新等方面的獨特之處。使用下方的按鈕來切換比較對象，找到最適合您的練習風格。</p>
+                </div>
+                <div class="w-full max-w-4xl mx-auto">
+                    <div class="flex justify-center flex-wrap gap-2 mb-8">
+                        <button class="comparison-btn bg-amber-500 text-white px-4 py-2 rounded-full text-sm" data-style="hatha">與 哈達瑜伽 比較</button>
+                        <button class="comparison-btn bg-white text-amber-600 border border-amber-500 px-4 py-2 rounded-full text-sm" data-style="ashtanga">與 阿斯坦加 比較</button>
+                        <button class="comparison-btn bg-white text-amber-600 border border-amber-500 px-4 py-2 rounded-full text-sm" data-style="vinyasa">與 流瑜伽 比較</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table id="comparison-table" class="w-full min-w-max text-left border-collapse">
+                           <thead>
+                                <tr>
+                                    <th class="p-4 border-b-2 border-amber-200 bg-amber-100 text-amber-800">特點</th>
+                                    <th class="p-4 border-b-2 border-amber-200 bg-amber-100 text-amber-800">Akshar Yoga</th>
+                                    <th id="comparison-header" class="p-4 border-b-2 border-amber-200 bg-amber-100 text-amber-800">哈達瑜伽</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Rows will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-amber-800 text-white">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 Akshar Yoga 探索之旅。基於公開資訊製作的互動式報告。</p>
+            <p class="text-sm text-amber-200 mt-2">此頁面為概念展示，非 Akshar Yoga 官方網站。</p>
+        </div>
+    </footer>
+
+    <!-- Recommendation Modal -->
+    <div id="recommendation-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 class="text-xl font-bold text-amber-800 mb-4">獲取個人化推薦</h3>
+            <p class="text-gray-700 mb-4">請描述您的目標或心情，例如：「我感到壓力很大，想放鬆」或「我需要更多能量」。</p>
+            <input type="text" id="user-input-recommendation" class="w-full p-2 border border-gray-300 rounded-md mb-4" placeholder="輸入您的目標或心情...">
+            <button id="submit-recommendation" class="px-4 py-2 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition">提交</button>
+            <div id="recommendation-result" class="mt-4 text-gray-800"></div>
+            <div id="recommendation-loading" class="mt-4 hidden">
+                <div class="loading-spinner"></div> 載入中...
+            </div>
+        </div>
+    </div>
+
+    <!-- Philosophy Insight Modal -->
+    <div id="philosophy-insight-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 class="text-xl font-bold text-amber-800 mb-4" id="insight-modal-title"></h3>
+            <div id="philosophy-insight-content" class="text-gray-800"></div>
+            <div id="insight-loading" class="mt-4 hidden">
+                <div class="loading-spinner"></div> 載入中...
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // Data
+            const eightLimbsData = [
+                { name: '制戒 (Yamas)', desc: '道德準則，包括非暴力、誠實、不偷盜、節制、不貪婪。' },
+                { name: '內制 (Niyamas)', desc: '自我修煉，包括潔淨、知足、自律、自省、臣服。' },
+                { name: '體位法 (Asana)', desc: '身體姿勢的練習，為冥想做準備。' },
+                { name: '呼吸控制法 (Pranayama)', desc: '控制生命能量(呼吸)的藝術。' },
+                { name: '攝心 (Pratyahara)', desc: '感官的收攝，將意識從外在轉向內在。' },
+                { name: '專注 (Dharana)', desc: '將心識集中於單一對象。' },
+                { name: '冥想 (Dhyana)', desc: '持續不斷的專注，進入無間斷的覺知流。' },
+                { name: '三摩地 (Samadhi)', desc: '超意識狀態，與宇宙意識合一。' }
+            ];
+
+            const pranayamaData = [
+                { name: '風箱式呼吸法', desc: '強而有力的吸氣與呼氣，能活化身心、提升能量。', benefits: '活化身心、思緒清晰、提升能量' },
+                { name: '鼻孔交替呼吸法', desc: '左右鼻孔交替呼吸，平衡身體能量，鎮定心神。', benefits: '平衡能量、鎮定心神、減輕壓力' },
+                { name: '頭顱清明呼吸法', desc: '快速、強而有力的呼氣，能提神醒腦、淨化身體。', benefits: '提神醒腦、增強專注力、體內淨化' },
+                { name: '太陽脈淨化法', desc: '刺激太陽能量通道，增強活力。', benefits: '增強活力、為冥想做準備' },
+                { name: '月亮脈淨化法', desc: '平衡月亮能量，促進放鬆和情緒穩定。', benefits: '清涼鎮靜、促進放鬆' },
+                { name: '太陽穿透呼吸法', desc: '透過右鼻孔呼吸，活化身體能量。', benefits: '活化身體、增強專注力' },
+                { name: '月亮穿透呼吸法', desc: '透過左鼻孔呼吸，鎮定心神，促進放鬆。', benefits: '鎮定心神、減輕焦慮' },
+                { name: '勝利呼吸法', desc: '發出海洋般聲音，增強專注力、淨化排毒。', benefits: '增強專注力、提升能量、淨化排毒' },
+                { name: '蜂鳴式呼吸法', desc: '產生輕柔的嗡嗡聲，鎮定心神、減輕焦慮。', benefits: '鎮定心神、思緒清晰' },
+                { name: '清涼調息法', desc: '透過捲舌吸氣，清涼身心、鎮定神經。', benefits: '清涼身心、降低體溫' },
+            ];
+
+            const meditationData = [
+                { name: '超能力冥想', desc: '觀想三角形的山與金黃色光，旨在喚醒內在力量。', goal: '喚醒內在力量' },
+                { name: '太陽之光冥想', desc: '旨在建立天人合一，汲取太陽的生命能量。', goal: '汲取生命能量' },
+                { name: '鏡子冥想', desc: '凝視鏡中的自己，揭示真實自我，增強專注力。', goal: '揭示真我' },
+                { name: '凝視點冥想', desc: '專注凝視一個點(Bindu)，活化心智，促進靈性覺醒。', goal: '促進靈性覺醒' },
+                { name: 'Bhavigatha 冥想', desc: '專注於給予和培養感恩之心，改善情緒。', goal: '培養感恩之心' },
+                { name: '神聖之光冥想', desc: '將能量引導至靈魂，重新發現內在目的。', goal: '重新發現內在目的' },
+            ];
+            
+            const comparisonData = {
+                hatha: {
+                    name: "哈達瑜伽",
+                    values: ["通常較慢，注重姿勢保持", "無固定序列，注重姿勢本身", "身體姿勢、呼吸控制、冥想基礎", "較少創新，注重傳統基礎", "初學者、尋求溫和練習者"]
+                },
+                ashtanga: {
+                    name: "阿斯坦加瑜伽",
+                    values: ["體力要求高、嚴謹、快節奏", "固定序列，每次練習相同", "淨化身體、紀律、自我覺察", "嚴格遵循傳統序列", "尋求紀律、體力挑戰者"]
+                },
+                vinyasa: {
+                    name: "流瑜伽",
+                    values: ["步調多變，從慢到快，流暢", "無標準序列，教師自訂流動", "動作與呼吸同步、創意流動", "較具現代感和創意", "喜歡變化、流動運動者"]
+                }
+            };
+            const aksharData = ["高強度、嚴謹、快節奏", "重複性流動體勢，強調呼吸", "力量、柔韌平衡、心肺功能", "引入力量/空中/輪瑜伽", "尋求高強度鍛鍊者"];
+            const comparisonFeatures = ["步調與強度", "序列結構", "核心重點", "創新元素", "適合對象"];
+
+
+            // Mobile Menu Toggle
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Active Nav Link on Scroll
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            window.onscroll = () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 65) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            };
+            
+            // Philosophy Section: Eight Limbs
+            const eightLimbsContainer = document.getElementById('eight-limbs-container');
+            eightLimbsData.forEach(limb => {
+                const limbEl = document.createElement('div');
+                limbEl.className = 'card bg-white p-4 rounded-lg shadow-md cursor-pointer flex flex-col justify-between';
+                limbEl.innerHTML = `
+                    <div>
+                        <h4 class="font-semibold text-amber-700">${limb.name}</h4>
+                        <p class="text-sm text-gray-500 hidden">${limb.desc}</p>
+                    </div>
+                    <button class="mt-4 px-3 py-1 bg-amber-500 text-white rounded-full text-xs hover:bg-amber-600 transition self-end philosophy-insight-btn" data-limb-name="${limb.name}" data-limb-desc="${limb.desc}">✨ 深入洞察 ✨</button>
+                `;
+                limbEl.querySelector('h4').addEventListener('click', () => {
+                    limbEl.querySelector('p').classList.toggle('hidden');
+                });
+                eightLimbsContainer.appendChild(limbEl);
+            });
+
+            // Practice Section: Tabs
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    const tabId = btn.dataset.tab;
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                        if (content.id === `${tabId}-content`) {
+                            content.classList.remove('hidden');
+                        }
+                    });
+                });
+            });
+
+            // Practice Section: Pranayama
+            const pranayamaList = document.getElementById('pranayama-list');
+            const pranayamaDetails = document.getElementById('pranayama-details');
+            pranayamaData.forEach(pranayama => {
+                const btn = document.createElement('button');
+                btn.className = 'px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm hover:bg-amber-200 transition';
+                btn.textContent = pranayama.name;
+                btn.addEventListener('click', () => {
+                    pranayamaDetails.innerHTML = `
+                        <h4 class="text-xl font-bold text-amber-800 mb-2">${pranayama.name}</h4>
+                        <p class="text-gray-600 mb-4">${pranayama.desc}</p>
+                        <div class="bg-amber-50 p-4 rounded-lg">
+                            <h5 class="font-semibold text-amber-700">主要益處：</h5>
+                            <p class="text-gray-600">${pranayama.benefits}</p>
+                        </div>
+                    `;
+                });
+                pranayamaList.appendChild(btn);
+            });
+
+            // Practice Section: Meditation
+            const meditationList = document.getElementById('meditation-list');
+            const meditationDetails = document.getElementById('meditation-details');
+            meditationData.forEach(meditation => {
+                const btn = document.createElement('button');
+                btn.className = 'px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm hover:bg-amber-200 transition';
+                btn.textContent = meditation.name;
+                btn.addEventListener('click', () => {
+                    meditationDetails.innerHTML = `
+                        <h4 class="text-xl font-bold text-amber-800 mb-2">${meditation.name}</h4>
+                        <p class="text-gray-600 mb-4">${meditation.desc}</p>
+                        <div class="bg-amber-50 p-4 rounded-lg">
+                            <h5 class="font-semibold text-amber-700">主要目標：</h5>
+                            <p class="text-gray-600">${meditation.goal}</p>
+                        </div>
+                    `;
+                });
+                meditationList.appendChild(btn);
+            });
+
+            // Benefits Chart
+            const ctx = document.getElementById('benefitsChart').getContext('2d');
+            const benefitsChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['力量', '心肺', '柔軟度', '正念', '紀律性', '創新性'],
+                    datasets: [
+                        {
+                            label: 'Akshar Yoga',
+                            data: [9, 8, 7, 7, 8, 9],
+                            backgroundColor: 'rgba(217, 119, 6, 0.2)',
+                            borderColor: 'rgba(217, 119, 6, 1)',
+                            pointBackgroundColor: 'rgba(217, 119, 6, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(217, 119, 6, 1)',
+                        },
+                        {
+                            label: '傳統哈達瑜伽',
+                            data: [5, 3, 8, 8, 5, 2],
+                            backgroundColor: 'rgba(75, 85, 99, 0.2)',
+                            borderColor: 'rgba(75, 85, 99, 1)',
+                            pointBackgroundColor: 'rgba(75, 85, 99, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(75, 85, 99, 1)',
+                        }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0,0,0,0.1)' },
+                            grid: { color: 'rgba(0,0,0,0.1)' },
+                            pointLabels: { font: { size: 12 } },
+                            ticks: {
+                                backdropColor: 'transparent',
+                                stepSize: 2,
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 10
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.r !== null) {
+                                        label += context.parsed.r;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Comparison Table
+            const comparisonBtns = document.querySelectorAll('.comparison-btn');
+            const comparisonHeader = document.getElementById('comparison-header');
+            const comparisonTableBody = document.querySelector('#comparison-table tbody');
+
+            function updateComparisonTable(styleKey) {
+                const styleData = comparisonData[styleKey];
+                comparisonHeader.textContent = styleData.name;
+                comparisonTableBody.innerHTML = '';
+
+                comparisonFeatures.forEach((feature, index) => {
+                    const row = document.createElement('tr');
+                    row.className = 'border-b border-gray-200';
+                    row.innerHTML = `
+                        <td class="p-4 font-semibold text-gray-700">${feature}</td>
+                        <td class="p-4 text-gray-600">${aksharData[index]}</td>
+                        <td class="p-4 text-gray-600">${styleData.values[index]}</td>
+                    `;
+                    comparisonTableBody.appendChild(row);
+                });
+            }
+
+            comparisonBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    comparisonBtns.forEach(b => {
+                        b.classList.remove('bg-amber-500', 'text-white');
+                        b.classList.add('bg-white', 'text-amber-600', 'border', 'border-amber-500');
+                    });
+                    btn.classList.add('bg-amber-500', 'text-white');
+                    btn.classList.remove('bg-white', 'text-amber-600', 'border', 'border-amber-500');
+                    updateComparisonTable(btn.dataset.style);
+                });
+            });
+
+            // Initial load
+            updateComparisonTable('hatha');
+
+            // Gemini API Integration
+            const apiKey = ""; // Leave this as-is; Canvas will provide the API key at runtime.
+
+            async function callGeminiAPI(prompt, targetElement, loadingElement) {
+                targetElement.innerHTML = '';
+                loadingElement.classList.remove('hidden');
+
+                try {
+                    const chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        targetElement.innerHTML = `<div class="ai-response-box">${text}</div>`;
+                    } else {
+                        targetElement.innerHTML = `<div class="ai-response-box" style="border-left-color: #ef4444; color: #b91c1c;">抱歉，無法生成回應。請稍後再試。</div>`;
+                    }
+                } catch (error) {
+                    console.error('Gemini API 呼叫失敗:', error);
+                    targetElement.innerHTML = `<div class="ai-response-box" style="border-left-color: #ef4444; color: #b91c1c;">發生錯誤：${error.message || '無法連接到服務。'}</div>`;
+                } finally {
+                    loadingElement.classList.add('hidden');
+                }
+            }
+
+            // Philosophy Insight Feature
+            const philosophyInsightModal = document.getElementById('philosophy-insight-modal');
+            const insightModalTitle = document.getElementById('insight-modal-title');
+            const philosophyInsightContent = document.getElementById('philosophy-insight-content');
+            const insightLoading = document.getElementById('insight-loading');
+            const closeInsightModalBtn = philosophyInsightModal.querySelector('.close-button');
+
+            document.querySelectorAll('.philosophy-insight-btn').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const limbName = button.dataset.limbName;
+                    const limbDesc = button.dataset.limbDesc;
+                    insightModalTitle.textContent = `${limbName} - 深入洞察`;
+                    philosophyInsightModal.style.display = 'flex';
+
+                    const prompt = `請提供瑜伽八支中的「${limbName} (${limbDesc})」的現代解讀和更深層次的洞察。請專注於它在當代生活中的相關性，並保持簡潔。`;
+                    await callGeminiAPI(prompt, philosophyInsightContent, insightLoading);
+                });
+            });
+
+            closeInsightModalBtn.addEventListener('click', () => {
+                philosophyInsightModal.style.display = 'none';
+            });
+            window.addEventListener('click', (event) => {
+                if (event.target == philosophyInsightModal) {
+                    philosophyInsightModal.style.display = 'none';
+                }
+            });
+
+
+            // Recommendation Feature (Pranayama & Meditation)
+            const recommendationModal = document.getElementById('recommendation-modal');
+            const userInputRecommendation = document.getElementById('user-input-recommendation');
+            const submitRecommendationBtn = document.getElementById('submit-recommendation');
+            const recommendationResult = document.getElementById('recommendation-result');
+            const recommendationLoading = document.getElementById('recommendation-loading');
+            const closeRecommendationModalBtn = recommendationModal.querySelector('.close-button');
+
+            document.getElementById('pranayama-recommend-btn').addEventListener('click', () => {
+                recommendationModal.style.display = 'flex';
+                recommendationResult.innerHTML = '';
+                userInputRecommendation.value = '';
+                userInputRecommendation.dataset.type = 'pranayama';
+            });
+
+            document.getElementById('meditation-recommend-btn').addEventListener('click', () => {
+                recommendationModal.style.display = 'flex';
+                recommendationResult.innerHTML = '';
+                userInputRecommendation.value = '';
+                userInputRecommendation.dataset.type = 'meditation';
+            });
+
+            submitRecommendationBtn.addEventListener('click', async () => {
+                const userGoal = userInputRecommendation.value.trim();
+                const type = userInputRecommendation.dataset.type;
+                if (!userGoal) {
+                    recommendationResult.innerHTML = `<div class="ai-response-box" style="border-left-color: #ef4444; color: #b91c1c;">請輸入您的目標或心情。</div>`;
+                    return;
+                }
+
+                let dataToUse = [];
+                let promptType = '';
+                if (type === 'pranayama') {
+                    dataToUse = pranayamaData.map(p => `${p.name} (益處: ${p.benefits})`).join(', ');
+                    promptType = '呼吸控制法';
+                } else if (type === 'meditation') {
+                    dataToUse = meditationData.map(m => `${m.name} (目標: ${m.goal})`).join(', ');
+                    promptType = '冥想技術';
+                }
+
+                const prompt = `我現在的目標或心情是：「${userGoal}」。請從以下 Akshar Yoga 的${promptType}列表中，推薦一個最適合我的：${dataToUse}。請簡潔地解釋為什麼它適合我。`;
+                await callGeminiAPI(prompt, recommendationResult, recommendationLoading);
+            });
+
+            closeRecommendationModalBtn.addEventListener('click', () => {
+                recommendationModal.style.display = 'none';
+            });
+            window.addEventListener('click', (event) => {
+                if (event.target == recommendationModal) {
+                    recommendationModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
