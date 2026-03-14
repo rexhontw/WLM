@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>水裡學 WATER IN-SIGHT — 展區影像策劃提案</title>
+<meta name="description" content="2026 台灣設計展桃園水務局展區影像策劃提案 — 白輻射影像 Whitelight Motion v2">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #060a10; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+
+
+const C = {
+  bg: "#060a10", surface: "#0c1018", surfaceAlt: "#101820", border: "#1a2535",
+  text: "#d8e0ea", textSub: "#7a8ea0", textMuted: "#445566",
+  blue: "#3d8fd6", blueDim: "#1e4a7a", blueGlow: "#5ab0ff",
+  warm: "#d4954a", warmDim: "#7a5520", cyan: "#4ac8c8", white: "#f0f4f8",
+};
+const F = {
+  serif: "'Noto Serif TC','Source Han Serif TC',Georgia,serif",
+  sans: "'Noto Sans TC','Source Han Sans TC',sans-serif",
+  latin: "'Cormorant Garamond',Georgia,serif",
+  mono: "'JetBrains Mono','SF Mono',monospace",
+};
+
+function WaterBg() {
+  const ref = useRef(null), anim = useRef(null);
+  useEffect(() => {
+    const cv = ref.current; if (!cv) return;
+    const ctx = cv.getContext("2d"); let t = 0;
+    const resize = () => { cv.width = window.innerWidth; cv.height = window.innerHeight; };
+    resize(); window.addEventListener("resize", resize);
+    const draw = () => {
+      t += 0.002; const w = cv.width, h = cv.height;
+      ctx.clearRect(0, 0, w, h);
+      for (let layer = 0; layer < 8; layer++) {
+        ctx.beginPath();
+        const baseY = h * (0.15 + layer * 0.1), amp = 18 + layer * 6, freq = 0.002 + layer * 0.0005, speed = t * (0.8 + layer * 0.15);
+        for (let x = 0; x <= w; x += 3) {
+          const y = baseY + Math.sin(x * freq + speed) * amp + Math.sin(x * freq * 2.3 + speed * 1.7) * (amp * 0.4) + Math.cos(x * freq * 0.5 + speed * 0.6 + layer) * (amp * 0.6);
+          x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = `hsla(${200 + layer * 8},60%,60%,${Math.max(0.025 - layer * 0.002, 0.005)})`;
+        ctx.lineWidth = 1; ctx.stroke();
+      }
+      for (let i = 0; i < 30; i++) {
+        const px = (Math.sin(t * 0.3 + i * 7.13) * 0.5 + 0.5) * w, py = (Math.cos(t * 0.2 + i * 4.57) * 0.5 + 0.5) * h;
+        ctx.beginPath(); ctx.arc(px, py, 1 + Math.sin(t + i) * 0.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(90,176,255,${0.06 + Math.sin(t * 2 + i) * 0.03})`; ctx.fill();
+      }
+      anim.current = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => { window.removeEventListener("resize", resize); cancelAnimationFrame(anim.current); };
+  }, []);
+  return <canvas ref={ref} style={{ position: "fixed", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0 }} />;
+}
+
+function ChapterVisual({ mode = "descend", height = 200 }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const cv = ref.current; if (!cv) return;
+    const ctx = cv.getContext("2d");
+    const dpr = window.devicePixelRatio || 1;
+    const w = cv.clientWidth, h = cv.clientHeight;
+    cv.width = w * dpr; cv.height = h * dpr; ctx.scale(dpr, dpr);
+    let t = Math.random() * 100, raf;
+    const draw = () => {
+      t += 0.008; ctx.clearRect(0, 0, w, h);
+      if (mode === "descend") {
+        const grad = ctx.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0, "rgba(40,80,140,0.08)"); grad.addColorStop(1, "rgba(10,20,40,0.02)");
+        ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+        for (let i = 0; i < 60; i++) {
+          const x = (i * 17.3 + Math.sin(t * 0.3 + i) * 20) % w, y = ((t * 40 + i * 31.7) % (h + 40)) - 20, len = 8 + Math.sin(i * 2.1) * 5;
+          ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.sin(t * 0.1) * 2, y + len);
+          ctx.strokeStyle = `rgba(90,176,255,${0.15 + Math.sin(t + i) * 0.08})`; ctx.lineWidth = 0.8; ctx.stroke();
+        }
+        for (let l = 0; l < 4; l++) {
+          ctx.beginPath(); const ly = h - 30 + l * 8;
+          for (let x = 0; x <= w; x += 2) { const yy = ly + Math.sin(x * 0.02 + t * 1.5 + l) * 3; x === 0 ? ctx.moveTo(x, yy) : ctx.lineTo(x, yy); }
+          ctx.strokeStyle = `rgba(70,150,220,${0.1 - l * 0.02})`; ctx.lineWidth = 1; ctx.stroke();
+        }
+      } else if (mode === "dark") {
+        const grad = ctx.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0, "rgba(8,12,20,0.1)"); grad.addColorStop(0.5, "rgba(15,25,45,0.06)"); grad.addColorStop(1, "rgba(30,60,100,0.04)");
+        ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+        for (let i = 0; i < 40; i++) {
+          const bx = (i * 23.7 + Math.sin(i * 1.3) * 40) % w, by = h - ((t * 20 + i * 19.3) % (h + 20)), br = 1.5 + Math.sin(i * 3.7) * 1;
+          ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(80,160,220,${0.12 + Math.sin(t * 2 + i) * 0.06})`; ctx.lineWidth = 0.6; ctx.stroke();
+        }
+        for (let l = 0; l < 6; l++) {
+          ctx.beginPath(); const ly = h * (0.2 + l * 0.12);
+          for (let x = 0; x <= w; x += 2) { const yy = ly + Math.sin(x * 0.008 + t + l * 1.5) * (6 + l * 2); x === 0 ? ctx.moveTo(x, yy) : ctx.lineTo(x, yy); }
+          ctx.strokeStyle = `rgba(60,120,180,0.06)`; ctx.lineWidth = 0.8; ctx.stroke();
+        }
+      } else if (mode === "cycle") {
+        const cx2 = w / 2, cy2 = h / 2;
+        for (let ring = 0; ring < 6; ring++) {
+          ctx.beginPath(); const r = 30 + ring * 25 + Math.sin(t + ring) * 8;
+          for (let a = 0; a < Math.PI * 2; a += 0.05) {
+            const rr = r + Math.sin(a * 3 + t * 2 + ring) * 5;
+            const px = cx2 + Math.cos(a + t * 0.3 + ring * 0.3) * rr, py = cy2 + Math.sin(a + t * 0.3 + ring * 0.3) * rr * 0.6;
+            a === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+          }
+          ctx.closePath(); ctx.strokeStyle = `rgba(80,180,220,${0.08 - ring * 0.01})`; ctx.lineWidth = 0.8; ctx.stroke();
+        }
+        for (let i = 0; i < 20; i++) {
+          const angle = t * 0.5 + i * (Math.PI * 2 / 20), dist = 60 + i * 8 + Math.sin(t + i) * 10;
+          const px = cx2 + Math.cos(angle) * dist, py = cy2 + Math.sin(angle) * dist * 0.55;
+          ctx.beginPath(); ctx.arc(px, py, 1.2, 0, Math.PI * 2); ctx.fillStyle = "rgba(120,200,255,0.15)"; ctx.fill();
+        }
+      }
+      raf = requestAnimationFrame(draw);
+    };
+    draw(); return () => cancelAnimationFrame(raf);
+  }, [mode]);
+  return (
+    <div style={{ position: "relative", width: "100%", height, borderRadius: 8, overflow: "hidden", margin: "32px 0", border: `1px solid ${C.border}` }}>
+      <canvas ref={ref} style={{ width: "100%", height: "100%", display: "block" }} />
+    </div>
+  );
+}
+
+function FadeIn({ children, delay = 0, style = {} }) {
+  const [vis, setVis] = useState(false); const ref = useRef(null);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.12 });
+    if (ref.current) obs.observe(ref.current); return () => obs.disconnect();
+  }, []);
+  return <div ref={ref} style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(24px)", transition: `opacity 0.7s ease ${delay}s, transform 0.7s ease ${delay}s`, ...style }}>{children}</div>;
+}
+
+function Table({ headers, rows, accent = C.blue }) {
+  return (
+    <div style={{ overflowX: "auto", margin: "24px 0" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, fontFamily: F.sans, lineHeight: 1.75 }}>
+        <thead><tr>{headers.map((h, i) => <th key={i} style={{ textAlign: "left", padding: "8px 12px", borderBottom: `1px solid ${accent}40`, color: accent, fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", whiteSpace: "nowrap" }}>{h}</th>)}</tr></thead>
+        <tbody>{rows.map((row, ri) => <tr key={ri} style={{ borderBottom: `1px solid ${C.border}15` }}>{row.map((cell, ci) => <td key={ci} style={{ padding: "12px", color: ci === 0 ? C.text : C.textSub, fontWeight: ci === 0 ? 500 : 400, verticalAlign: "top", minWidth: ci === 0 ? 90 : ci === 2 ? 260 : 140, fontSize: 13 }}>{cell}</td>)}</tr>)}</tbody>
+      </table>
+    </div>
+  );
+}
+
+function Divider({ label }) {
+  return <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "72px 0 36px" }}>
+    <div style={{ height: 1, flex: 1, background: `linear-gradient(to right, transparent, ${C.border})` }} />
+    <span style={{ fontFamily: F.mono, fontSize: 10, color: C.textMuted, letterSpacing: "0.14em" }}>{label}</span>
+    <div style={{ height: 1, flex: 1, background: `linear-gradient(to left, transparent, ${C.border})` }} />
+  </div>;
+}
+
+function Tag({ children, color = C.blue }) {
+  return <span style={{ fontFamily: F.mono, fontSize: 10, color, letterSpacing: "0.1em", padding: "3px 8px", border: `1px solid ${color}30`, borderRadius: 3, display: "inline-block", marginBottom: 20 }}>{children}</span>;
+}
+
+function P({ children, s = {} }) {
+  return <p style={{ color: C.textSub, fontSize: 14.5, lineHeight: 2.1, marginBottom: 20, ...s }}>{children}</p>;
+}
+
+function App() {
+  return (
+    <div style={{ background: C.bg, color: C.text, fontFamily: F.sans, minHeight: "100vh", position: "relative" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&family=JetBrains+Mono:wght@300;400&display=swap');*{box-sizing:border-box;margin:0;padding:0}::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:${C.bg}}::-webkit-scrollbar-thumb{background:${C.border};border-radius:2px}::selection{background:${C.blueDim};color:${C.white}}`}</style>
+      <WaterBg />
+      <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "0 32px", position: "relative", zIndex: 1 }}>
+        <FadeIn><div style={{ fontFamily: F.mono, fontSize: 10, color: C.textMuted, letterSpacing: "0.22em", marginBottom: 40, textAlign: "center" }}>2026 TAIWAN DESIGN EXHIBITION — TAOYUAN WATER AFFAIRS BUREAU</div></FadeIn>
+        <FadeIn delay={0.2}><h1 style={{ fontFamily: F.serif, fontSize: "clamp(40px,7vw,80px)", fontWeight: 700, textAlign: "center", letterSpacing: "0.08em", lineHeight: 1.2, marginBottom: 16, background: `linear-gradient(135deg,${C.white},${C.blueGlow})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>水裡學</h1></FadeIn>
+        <FadeIn delay={0.35}><div style={{ fontFamily: F.latin, fontSize: "clamp(20px,3vw,36px)", fontWeight: 300, fontStyle: "italic", color: C.blue, letterSpacing: "0.18em", textAlign: "center", marginBottom: 56 }}>WATER IN-SIGHT</div></FadeIn>
+        <FadeIn delay={0.5}><div style={{ textAlign: "center", color: C.textMuted, fontSize: 13, lineHeight: 1.8 }}>展區影像策劃提案<br /><span style={{ opacity: 0.6 }}>白輻射影像 Whitelight Motion — v2</span></div></FadeIn>
+        <FadeIn delay={0.7}><div style={{ marginTop: 80, opacity: 0.3, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}><div style={{ width: 1, height: 48, background: `linear-gradient(to bottom,transparent,${C.textMuted})` }} /><div style={{ fontFamily: F.mono, fontSize: 9, color: C.textMuted, letterSpacing: "0.2em" }}>SCROLL</div></div></FadeIn>
+      </section>
+      <div style={{ maxWidth: 800, margin: "0 auto", padding: "0 28px 140px", position: "relative", zIndex: 1 }}>
+        <FadeIn><P>這是一座讓觀眾從感知開始理解水的展場。人走進空間時，最先接住他的會是光、聲音、流動感，接著才慢慢進入水在城市裡的旅程。從天空、埤塘、河流、水庫，到地下管網、處理設施與再生循環，整個觀看經驗希望帶觀眾從表面走進系統，也從系統重新回到生活。</P></FadeIn>
+        <FadeIn delay={0.1}><P>我們希望這個展區不只是傳遞資訊，而是讓人先感受到水的節奏，再理解水務治理如何長期支撐一座城市。這樣的安排，可以讓原本偏理性的治理內容，轉化成一種更有身體感、也更容易被記住的經驗。</P></FadeIn>
+        <FadeIn delay={0.15}><P>規劃中央區以三支預製內容構成核心，包括兩支常態篇章與一支表演篇；整體敘事以真實水務脈絡為基底，但在影像上會透過抽象化的光影、線條與節奏來轉譯。周邊包覆區則會把這樣的感知進一步延伸到整體空間，讓水的紋理、節奏與能量，成為展場中不斷發生的感知背景。</P></FadeIn>
+
+        <Divider label="01 — CENTRAL ZONE" />
+        <FadeIn><h2 style={{ fontFamily: F.serif, fontSize: 26, fontWeight: 600, marginBottom: 8, letterSpacing: "0.04em" }}>1｜中央區｜凝視一個池塘</h2></FadeIn>
+        <FadeIn delay={0.08}><Tag>1-1　空間設定</Tag><P>中央區是整個展覽影像密度最高的位置。三片垂直懸吊面的設置，讓觀眾像圍繞著池塘邊一樣停留、觀看，也讓影像有一種被包圍、被凝視的感受。透過建立一個觀看位置：人站在池塘邊，也像站在城市水文系統的邊界，開始跟著水的視角往內走。</P></FadeIn>
+        <FadeIn delay={0.1}><Tag>1-2　策劃邏輯</Tag><P>以「觀察一個池塘」作為核心意象。將「池塘」當成一個縮影。桃園的埤塘、河流、水庫與海口，都是實際存在的地景，進一步成為影像裡的重要象徵。觀眾跟著水的視角往前移動，看見水怎麼被承接、被留住、被分配、被收納、被淨化，最後再回到循環。透過敘事讓人更自然地理解，政策、工程、維運其實都不是抽離生活的另一層語言，而是日常能夠穩定運作的基礎。</P><div style={{ fontFamily: F.latin, fontSize: 17, fontStyle: "italic", color: C.blue, letterSpacing: "0.07em", marginBottom: 32, opacity: 0.9 }}>WATER IN-SIGHT — 看見水，也從水裡看見。</div></FadeIn>
+
+        <Divider label="AMBIENT MODE — CHAPTER I" />
+        <FadeIn><h3 style={{ fontFamily: F.serif, fontSize: 20, fontWeight: 600, marginBottom: 6 }}>篇章一｜水的降臨與抵達</h3><Tag color={C.warm}>對應：水之源、水之用</Tag><P>這一篇的節奏會比較明亮、開闊，也比較貼近日常。透過讓觀眾先感受到水本身的自由與尺度，再慢慢意識到，城市其實一直在等待它、承接它，也安排它進入生活。從天空到埤塘、從壩體到管線、從大尺度的水體到手邊的水，整體畫面會一路收攏，最後讓人感受到水和城市生活之間很近的關係。</P></FadeIn>
+        <FadeIn delay={0.08}><ChapterVisual mode="descend" height={180} /></FadeIn>
+        <FadeIn delay={0.1}><Table accent={C.warm} headers={["段落","情緒","視覺上的畫面","對應機關角色／日常工作"]} rows={[["空中｜水的自由","懸浮、安靜、帶有等待感","大片灰藍色天空佔滿視野，光從雲縫慢慢滲出，水滴在半空中旋轉，表面帶著微弱光譜，整個時間像被放慢，畫面裡有一種還沒落地的安靜。","降雨與水文條件作為水務工作的起點，連結城市如何迎接、承接天水，以及後續水資源管理的前端基礎。"],["落地｜水被攔下","穩定、克制、帶有控制感","鏡頭從高空往下，埤塘像棋盤般排列，水面映著天光。接著鏡頭下降，漣漪擴散、閘門開啟，堤岸的直線切過柔軟水面，遠方壩體安靜地橫在山谷之間，讓人感受到水被留住的力量。","防洪與滯洪設施操作、逕流分攤與出流管制、河川排水整治、水環境工程、埤塘滯洪改造與水利設施巡檢維護。"],["抵達｜水被分配","溫暖、貼近生活、帶親密感","畫面從水庫的大尺度跳到管線分岔節點，再跳到河岸步道上的人、水面倒映樹冠的輪廓、小尺度容器裡晃動的水，光穿過水柱，讓觀眾同時感受到水很貼身，也感受到整個系統的規模。","河岸親水空間與遊憩整備、城市水環境日常營造、供水系統末端與市民生活的接觸面。"]]} /></FadeIn>
+
+        <Divider label="AMBIENT MODE — CHAPTER II" />
+        <FadeIn><h3 style={{ fontFamily: F.serif, fontSize: 20, fontWeight: 600, marginBottom: 6 }}>篇章二｜水的消失與重生</h3><Tag color={C.blue}>對應：水之淨、水之循</Tag><P>這一篇會把畫面帶往更內斂、更幽深的地方。我們希望觀眾跟著水一起離開日常視線，進入那套平常看不到、卻始終在運作的系統。這一段的重要性在於「翻轉鄰避」，讓淨化與再生不只停留在知識說明，而是透過影像，讓人感受到這套系統的秩序、專業與被長期維持的重量。</P></FadeIn>
+        <FadeIn delay={0.08}><ChapterVisual mode="dark" height={180} /></FadeIn>
+        <FadeIn delay={0.1}><Table headers={["段落","情緒","視覺上的畫面","對應機關角色／日常工作"]} rows={[["消失｜水離開視線","斷裂、懸念、往下沉的安靜","一個原本發亮的水面突然失去水體，水被吸入、被吞沒，畫面由明轉暗，像跟著水一起沉入地面。城市聲音逐漸退遠，只剩低頻流動聲與空間回音。","雨水下水道、污水下水道、地表逕流導排，以及城市對大量水體的收納與分流。"],["淨化｜水被接住","專注、穩定、帶有工程秩序感","視角進入地下與處理系統深處，水流穿過管道、處理池表面浮著細密氣泡，機械運轉形成節律，光線在濕潤空間裡反射，畫面有一種低調但很堅定的秩序。","污水處理設施運作、管網系統維持、淨化技術與處理流程的日常管理。"],["重生｜水回到循環","上升、透亮、帶未來感","畫面從幽暗逐漸轉亮，水的顏色變得更清澈，薄膜、過濾、透明度提升、蒸氣與光一起往上，像水重新獲得新的身分。","再生水系統、水資源循環運用、未來水管理與城市可持續配置。"]]} /></FadeIn>
+
+        <Divider label="SHOW MODE" />
+        <FadeIn><h3 style={{ fontFamily: F.serif, fontSize: 20, fontWeight: 600, marginBottom: 6 }}>表演模式</h3><P>表演模式會在特定時段啟動，將兩支常態篇章重新組成一段完整的敘事弧線。透過節奏壓縮與更強的音樂驅動，強化關鍵轉折點的情緒密度，使觀眾在一次觀看中完成從降臨到重生的完整感知旅程。</P></FadeIn>
+        <FadeIn delay={0.08}><ChapterVisual mode="cycle" height={200} /></FadeIn>
+        <FadeIn delay={0.1}><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(170px,1fr))", gap: 14, margin: "24px 0 40px" }}>
+          {[{t:"降臨",m:"開展、甦醒、帶能量",d:"光從高處打開，水從天空出現，空間節奏由靜轉動。",c:C.cyan},{t:"承接",m:"穩定、聚攏、形成秩序",d:"埤塘、壩體、閘門、河道被重新編排，水開始被安排。",c:C.blue},{t:"轉化",m:"內斂、沉入、帶專業重量",d:"水進入地下，處理池、機械、流體與光影構成城市內部。",c:C.blueDim},{t:"回歸",m:"明亮、透氣、重新打開",d:"清澈的水重新出現，收在向未來延伸的循環感。",c:C.blueGlow}].map((item,i)=>(
+            <FadeIn key={i} delay={0.05+i*0.06}><div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 6, padding: "20px 18px", borderTop: `2px solid ${item.c}` }}><div style={{ fontFamily: F.serif, fontSize: 16, fontWeight: 600, marginBottom: 4 }}>{item.t}</div><div style={{ fontFamily: F.mono, fontSize: 9, color: item.c, letterSpacing: "0.06em", marginBottom: 12 }}>{item.m}</div><p style={{ color: C.textSub, fontSize: 12.5, lineHeight: 1.8 }}>{item.d}</p></div></FadeIn>
+          ))}
+        </div></FadeIn>
+
+        <Divider label="02 — PERIPHERAL WRAP ZONE" />
+        <FadeIn><h2 style={{ fontFamily: F.serif, fontSize: 26, fontWeight: 600, marginBottom: 8 }}>2｜周邊包覆區｜進入即在水中</h2></FadeIn>
+        <FadeIn delay={0.08}><Tag>2-1　空間設定</Tag><P>弧形牆面環繞展區外圍，結合多螢幕與投影映射，並整合資訊設計內容。觀眾從入口進入的那一刻起，即置身於「水的視角」之中，被整個空間的氛圍全面包圍。</P></FadeIn>
+        <FadeIn delay={0.1}><Tag>2-2　策劃邏輯</Tag><P>本區的影像是從音樂中即時生長出來的。音樂是驅動源，生成式演算系統將聲音即時轉譯為可觀看的視覺形式——每一個音符的強弱、節奏的緩急、音色的質地，都直接反映在影像的有機生成之中。影像因此有了呼吸感，有了靈魂，它本質上是音樂的另一種存在形式。</P><P>觀眾在接收牆面資訊內容的同時，始終處於這層流動的感知包覆之中。</P><div style={{ fontFamily: F.latin, fontSize: 16, fontStyle: "italic", color: C.blue, letterSpacing: "0.06em", marginBottom: 40, opacity: 0.85 }}>感知先於資訊——先讓人沉浸進去，再傳達要說的事。</div></FadeIn>
+
+        <Divider label="TEAM" />
+        <FadeIn><Tag>2-3　音樂與生成系統</Tag></FadeIn>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          {[{name:"許家維",role:"音樂監督 / 音樂導演",desc:"統籌展覽所有聽覺方向的規劃與整合。創作風格偏向數位、電子與合成器，長期與影像導演在視聽整合上有深度默契，能精準理解影像想要表達的感知層次，並以音樂語言作出呼應。",c:C.warm},{name:"Cicada",role:"音樂驅動 / 作曲、編曲",desc:"以室內樂編制為基礎的台灣樂團，長年以海洋、湖面、水紋、潮汐等自然元素作為音樂創作的核心命題，在古典器樂的框架中發展出高度現代的 Ambient 聲響質地。他們的音樂具備罕見的沉靜張力，能安靜如靜止的水面，也能在瞬間轉為洶湧的流動。",c:C.blue},{name:"Monolab 吳哲宇",role:"生成式演算系統",desc:"台灣新媒體藝術領域中深耕即時運算與生成影像的創作者。以程式即時捕捉音樂訊號，透過演算法將聲音轉化為在牆面上持續生長、流動、消散的有機影像——不重複、不預設，隨音樂而生，隨音樂而滅。",c:C.cyan}].map((m,i)=>(
+            <FadeIn key={i} delay={i*0.08}><div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 6, padding: "24px", borderLeft: `3px solid ${m.c}` }}><div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 8, flexWrap: "wrap" }}><span style={{ fontFamily: F.serif, fontSize: 17, fontWeight: 600 }}>{m.name}</span><span style={{ fontFamily: F.mono, fontSize: 10, color: m.c, letterSpacing: "0.06em" }}>{m.role}</span></div><p style={{ color: C.textSub, fontSize: 13.5, lineHeight: 1.9 }}>{m.desc}</p></div></FadeIn>
+          ))}
+        </div>
+
+        <div style={{ marginTop: 120, paddingTop: 32, borderTop: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between" }}>
+          <span style={{ fontFamily: F.mono, fontSize: 9, color: C.textMuted, letterSpacing: "0.12em" }}>WATER IN-SIGHT v2 — WHITELIGHT MOTION</span>
+          <span style={{ fontFamily: F.mono, fontSize: 9, color: C.textMuted, letterSpacing: "0.12em" }}>2026.03</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(React.createElement(App));
+
+</script>
+</body>
+</html>
