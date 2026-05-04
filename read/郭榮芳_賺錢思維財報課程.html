@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>郭榮芳｜財報課程知識庫</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&family=Space+Mono&display=swap');
+
+  :root {
+    --accent: #2D5016;
+    --bg: #fefdfb;
+    --sidebar-w: 280px;
+    --text: #1a1a1a;
+    --muted: #666;
+    --border: #e0ddd8;
+    --code-bg: #f4f1ec;
+    --blockquote-bg: #f9f7f4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  /* Layout */
+  .layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    height: 100vh;
+    background: #faf9f7;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .sidebar-header {
+    padding: 28px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .sidebar-header .label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .sidebar-header h2 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.4;
+    margin: 0;
+  }
+  
+  .sidebar-header .author {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+  }
+
+  /* Search */
+  .search-wrap {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .search-wrap input {
+    width: 100%;
+    padding: 8px 12px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'Noto Sans TC', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-wrap input:focus {
+    border-color: var(--accent);
+  }
+
+  .search-wrap input::placeholder { color: #bbb; }
+
+  /* Nav */
+  .nav-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 0 20px;
+  }
+
+  .nav-scroll::-webkit-scrollbar { width: 4px; }
+  .nav-scroll::-webkit-scrollbar-track { background: transparent; }
+  .nav-scroll::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+
+  .nav-scroll ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .nav-scroll li a {
+    display: block;
+    padding: 7px 20px;
+    font-size: 12.5px;
+    color: var(--muted);
+    text-decoration: none;
+    line-height: 1.4;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-scroll li a:hover {
+    color: var(--text);
+    background: rgba(0,0,0,0.03);
+    border-left-color: var(--accent);
+  }
+
+  .nav-scroll li a.active {
+    color: var(--accent);
+    font-weight: 500;
+    border-left-color: var(--accent);
+    background: rgba(0,0,0,0.02);
+  }
+
+  .nav-h1 > a {
+    font-weight: 600 !important;
+    font-size: 11.5px !important;
+    letter-spacing: 0.3px;
+    color: #444 !important;
+    background: #f2efe9 !important;
+    border-left: none !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    margin-top: 4px;
+    text-transform: none;
+  }
+
+  /* Main content */
+  #main {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    padding: 0;
+  }
+
+  #main::-webkit-scrollbar { width: 6px; }
+  #main::-webkit-scrollbar-track { background: transparent; }
+  #main::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+  .content-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 56px 56px 100px;
+  }
+
+  /* Typography */
+  .content-inner h1 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 60px 0 12px;
+    color: var(--text);
+    padding-top: 20px;
+  }
+
+  .content-inner h1:first-child {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .content-inner h2 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 52px 0 16px;
+    color: var(--text);
+    padding-top: 16px;
+    border-top: 2px solid var(--accent);
+    padding-bottom: 8px;
+  }
+
+  .content-inner h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 32px 0 12px;
+    color: var(--text);
+  }
+
+  .content-inner h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 24px 0 8px;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .content-inner p {
+    font-size: 15px;
+    line-height: 1.85;
+    margin: 0 0 16px;
+    color: #2a2a2a;
+  }
+
+  .content-inner ul, .content-inner ol {
+    margin: 0 0 16px 20px;
+  }
+
+  .content-inner li {
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 4px;
+    color: #2a2a2a;
+  }
+
+  .content-inner blockquote {
+    background: var(--blockquote-bg);
+    border-left: 3px solid var(--accent);
+    padding: 14px 20px;
+    margin: 20px 0;
+    font-size: 14.5px;
+    color: #444;
+    line-height: 1.75;
+    font-style: italic;
+  }
+
+  .content-inner code {
+    font-family: 'Space Mono', monospace;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  .content-inner hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  .content-inner strong {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .content-inner a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .content-inner a:hover {
+    text-decoration: underline;
+  }
+
+  /* Table */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 20px 0;
+  }
+
+  .content-inner table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  .content-inner th {
+    background: var(--accent);
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 500;
+  }
+
+  .content-inner td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .content-inner tr:hover td {
+    background: #f9f7f4;
+  }
+
+  /* Search highlight */
+  mark {
+    background: #fef08a;
+    color: inherit;
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  /* Search results overlay */
+  #search-results {
+    display: none;
+    position: absolute;
+    top: calc(28px + 16px + 55px + 53px);
+    left: 0;
+    width: var(--sidebar-w);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    max-height: 340px;
+    overflow-y: auto;
+    z-index: 100;
+  }
+
+  .search-result-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0ede8;
+    transition: background 0.15s;
+  }
+
+  .search-result-item:hover {
+    background: #f4f1ec;
+  }
+
+  .search-result-item .result-title {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .search-result-item .result-preview {
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .search-no-result {
+    padding: 16px;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  /* Progress bar */
+  #progress-bar {
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-w);
+    right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 0.1s;
+    z-index: 50;
+    opacity: 0.7;
+  }
+
+  /* ── RWD ─────────────────────────────────────── */
+  .hamburger {
+    display: none;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 200;
+    width: 40px;
+    height: 40px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    transition: background 0.2s;
+  }
+  .hamburger span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    transition: transform 0.25s, opacity 0.2s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 149;
+  }
+
+  @media (max-width: 768px) {
+    .hamburger { display: flex; }
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      z-index: 150;
+      transform: translateX(-100%);
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: none;
+    }
+    .sidebar.open {
+      transform: translateX(0);
+      box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+    }
+    .sidebar-overlay.open {
+      display: block;
+    }
+    #main {
+      width: 100%;
+    }
+    #progress-bar {
+      left: 0;
+    }
+    .content-inner {
+      padding: 64px 20px 80px;
+    }
+    .content-inner h1 { font-size: 22px; }
+    .content-inner h2 { font-size: 17px; }
+  }
+
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+
+<button class="hamburger" id="hamburger" aria-label="選單">
+  <span></span><span></span><span></span>
+</button>
+<div class="sidebar-overlay" id="overlay"></div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="label">知識庫</div>
+      <h2>郭榮芳｜財報課程知識庫</h2>
+      <div class="author">講師：郭榮芳（資深會計師）</div>
+    </div>
+    <div class="search-wrap" style="position:relative">
+      <input type="text" id="search-input" placeholder="搜尋關鍵字…" autocomplete="off">
+      <div id="search-results"></div>
+    </div>
+    <div class="nav-scroll">
+      <ul id="nav-list">
+        <li class="nav-h2"><a href="#主題一-財報的本質--為什麼要看財報" onclick="goToSection('主題一-財報的本質--為什麼要看財報'); return false;">主題一：財報的本質——為什麼要看財報</a></li>
+<li class="nav-h2"><a href="#主題二-四張財務報表的結構與含義" onclick="goToSection('主題二-四張財務報表的結構與含義'); return false;">主題二：四張財務報表的結構與含義</a></li>
+<li class="nav-h2"><a href="#主題三-損益表--企業怎麼賺錢" onclick="goToSection('主題三-損益表--企業怎麼賺錢'); return false;">主題三：損益表——企業怎麼賺錢</a></li>
+<li class="nav-h2"><a href="#主題四-資產負債表--企業用什麼資金營運" onclick="goToSection('主題四-資產負債表--企業用什麼資金營運'); return false;">主題四：資產負債表——企業用什麼資金營運</a></li>
+<li class="nav-h2"><a href="#主題五-現金流量表--賺錢和有現金是兩回事" onclick="goToSection('主題五-現金流量表--賺錢和有現金是兩回事'); return false;">主題五：現金流量表——賺錢和有現金是兩回事</a></li>
+<li class="nav-h2"><a href="#主題六-如何看懂財報--大數法則與比率分析" onclick="goToSection('主題六-如何看懂財報--大數法則與比率分析'); return false;">主題六：如何看懂財報——大數法則與比率分析</a></li>
+<li class="nav-h2"><a href="#主題七-企業獲利的兩種模式--高利潤-vs--高周轉" onclick="goToSection('主題七-企業獲利的兩種模式--高利潤-vs--高周轉'); return false;">主題七：企業獲利的兩種模式——高利潤 vs. 高周轉</a></li>
+<li class="nav-h2"><a href="#主題八-不能省的成本--關鍵要素投資" onclick="goToSection('主題八-不能省的成本--關鍵要素投資'); return false;">主題八：不能省的成本——關鍵要素投資</a></li>
+<li class="nav-h2"><a href="#主題九-資產流動與營運管理" onclick="goToSection('主題九-資產流動與營運管理'); return false;">主題九：資產流動與營運管理</a></li>
+<li class="nav-h2"><a href="#主題十-明明賺錢為什麼還會倒閉--黑字倒閉的警訊" onclick="goToSection('主題十-明明賺錢為什麼還會倒閉--黑字倒閉的警訊'); return false;">主題十：明明賺錢為什麼還會倒閉——黑字倒閉的警訊</a></li>
+<li class="nav-h2"><a href="#主題十一-賺錢企業-vs--地雷股--風險評估的檢查清單" onclick="goToSection('主題十一-賺錢企業-vs--地雷股--風險評估的檢查清單'); return false;">主題十一：賺錢企業 vs. 地雷股——風險評估的檢查清單</a></li>
+<li class="nav-h2"><a href="#附錄一-核心公式速查表" onclick="goToSection('附錄一-核心公式速查表'); return false;">附錄一：核心公式速查表</a></li>
+<li class="nav-h2"><a href="#附錄二-不同企業類型的典型特徵" onclick="goToSection('附錄二-不同企業類型的典型特徵'); return false;">附錄二：不同企業類型的典型特徵</a></li>
+<li class="nav-h2"><a href="#附錄三-讀這份知識庫的建議" onclick="goToSection('附錄三-讀這份知識庫的建議'); return false;">附錄三：讀這份知識庫的建議</a></li>
+<li class="nav-h2"><a href="#結語-財報力的本質" onclick="goToSection('結語-財報力的本質'); return false;">結語：財報力的本質</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div class="content-inner" id="content">
+      <h1 id="郭榮芳-賺錢思維財報課程---完整知識庫">郭榮芳｜賺錢思維財報課程 · 完整知識庫</h1>
+<p><strong>整合版 · 零基礎完全學習</strong></p>
+<p>講師：郭榮芳（資深會計師，曾任勤業眾信會計師事務所合夥人，多家企業顧問）</p>
+<hr>
+<blockquote>本知識庫將郭榮芳12集課程逐字稿，按照「如何用財報認識一家企業」與「如何通過財報做決策」的邏輯，重新整合為11個主題模組。不刪減任何核心內容，保留所有案例、數字、方法論。你可以從任意主題開始，也可以按順序系統學習。</blockquote>
+<hr>
+<h2 id="目錄">目錄</h2>
+<ol>
+<li><a href="#主題一">財報的本質：為什麼要看財報</a></li>
+<li><a href="#主題二">四張財務報表的結構與含義</a></li>
+<li><a href="#主題三">損益表：企業怎麼賺錢</a></li>
+<li><a href="#主題四">資產負債表：企業用什麼資金營運</a></li>
+<li><a href="#主題五">現金流量表：賺錢和有現金是兩回事</a></li>
+<li><a href="#主題六">如何看懂財報：大數法則與比率分析</a></li>
+<li><a href="#主題七">企業獲利的兩種模式：高利潤 vs. 高周轉</a></li>
+<li><a href="#主題八">不能省的成本：關鍵要素投資</a></li>
+<li><a href="#主題九">資產流動與營運管理</a></li>
+<li><a href="#主題十">明明賺錢為什麼還會倒閉：黑字倒閉的警訊</a></li>
+<li><a href="#主題十一">賺錢企業 vs. 地雷股：風險評估的檢查清單</a></li>
+</ol>
+<hr>
+<span id="主題一"></span>
+<h2 id="主題一-財報的本質--為什麼要看財報">主題一：財報的本質——為什麼要看財報</h2>
+<h3 id="1-1-一個新創公司的困境-營收增加-卻虧損越大">1.1 一個新創公司的困境：營收增加，卻虧損越大</h3>
+<p>郭榮芳曾經擔任一家新創公司的顧問。這家新創由幾個年輕且優秀的人創辦，他們非常努力，營收不斷增加。每三個月他們就開一次董監事會，在會上提出很多檢討和改進建議，包括業務策略。</p>
+<p>會議中他們提出了損益表，開始討論財務報表。但每次到了財務報表的探討，他們只能得出一個結論：「營收多少，但是我們還是虧損」。到最後，他們只能對彼此說：「革命尚未成功，同志仍需努力」。</p>
+<p>這個困境反映了一個根本問題：<strong>他們知道營收增加，卻不知道為什麼還在虧損，更不知道應該採取什麼行動</strong>。</p>
+<h3 id="1-2-財報應該回答的三個關鍵問題">1.2 財報應該回答的三個關鍵問題</h3>
+<p>郭榮芳在這次顧問經歷中，提出了三個必須從財報找到答案的問題：</p>
+<p><strong>第一個問題：損益平衡點在哪裡？</strong></p>
+<p>我們的營業額需要做到多少，才能夠不會虧損？這叫損益平衡點。很多企業經營者不知道這個數字。</p>
+<p><strong>第二個問題：為什麼營收越多，虧損卻越大？</strong></p>
+<p>這個現象說明什麼？通常代表企業的成本結構有問題——當銷量增加時，某些成本沒有被妥善控制，反而在增加。這需要從損益表的成本與費用項目裡找答案。</p>
+<p><strong>第三個問題：募集的資金用到哪裡去了？</strong></p>
+<p>這家新創募資可能是為了擴展業務、購置設備、招聘人員。但這些資金投入是否真正幫助了企業創造業績？這些資金能用多久？它是否符合企業未來的投資計畫？</p>
+<p>這三個問題都指向同一個根本能力：<strong>能否透過財務報表，全盤而快速地掌握公司的現況，並從中找出需要改進的具體問題</strong>。</p>
+<h3 id="1-3-財報力-分析力與洞察力">1.3 財報力：分析力與洞察力</h3>
+<p>張忠謀董事長曾說過：「沒有數量化就不能管理。」這說明了為什麼財務報表對企業經營如此重要——它是唯一能數量化企業運作狀況的工具。</p>
+<p>但是，財務報表<strong>只呈現現象，不告訴你問題所在</strong>。這就是為什麼需要「財報力」。</p>
+<p><strong>財報力的定義</strong>：解讀企業財務報表，進行分析，並從中掌握企業獲利模式、抽出關鍵因素，進而評估企業可能面臨的風險。這包含兩個能力層次：</p>
+<p><strong>分析力</strong>：</p>
+<ul>
+<li>能讀懂財務報表的數字</li>
+<li>能識別報表中最重要的幾個指標</li>
+<li>能進行比率分析（不只看金額，還要看比例）</li>
+<li>能進行同期比較（與去年同期比、與三年到五年趨勢比、與同業比）</li>
+</ul>
+<p><strong>洞察力</strong>：</p>
+<ul>
+<li>能從這些數字後面，看出企業怎麼獲利</li>
+<li>能看出企業的致勝武器是什麼、擅長什麼</li>
+<li>能判斷企業對未來是否做了足夠的投資</li>
+<li>能識別潛在的經營風險</li>
+</ul>
+<p>這兩個能力的最終目的是：<strong>為管理和決策提供依據</strong>。不管你在工作中做決策，還是在進行個人投資決策，正確的財報觀念都能讓你做出真正獲利的決策。</p>
+<h3 id="1-4-為什麼零基礎也必須學會看財報">1.4 為什麼零基礎也必須學會看財報</h3>
+<p>如果你是公司的經營者或主管，不看懂財務報表意味著：</p>
+<ul>
+<li>你不知道公司真實的獲利能力</li>
+<li>你看不出資金流向，容易做出錯誤的投資決策</li>
+<li>你無法識別危機——很多公司在倒閉前的報表已經出現警訊</li>
+</ul>
+<p>如果你是上班族或想要進行投資，不看懂財務報表意味著：</p>
+<ul>
+<li>你選不出真正賺錢的公司</li>
+<li>你容易被表面的 EPS（每股盈餘）或股價迷惑</li>
+<li>你無法識別「地雷股」——那些帳面上賺錢，實際上資金出問題的公司</li>
+</ul>
+<p>所以，<strong>無論你的職位或身份如何，學會看財報都不是選項，而是必備的基本能力</strong>。</p>
+<hr>
+<span id="主題二"></span>
+<h2 id="主題二-四張財務報表的結構與含義">主題二：四張財務報表的結構與含義</h2>
+<h3 id="2-1-為什麼有四張報表-而不是一張">2.1 為什麼有四張報表，而不是一張</h3>
+<p>企業的財務狀況複雜，單靠一張報表無法完整呈現。四張報表分別從不同的角度揭露企業的財務真相。</p>
+<h3 id="2-2-第一張報表-綜合損益表-損益表">2.2 第一張報表：綜合損益表（損益表）</h3>
+<p><strong>報表回答的問題</strong>：我們公司營收有多少？獲利是多少？</p>
+<p><strong>報表結構</strong>：損益表通常以「兩年度並列」的方式呈現，讓你能看出企業在不同年度的財務表現。</p>
+<p><strong>報表的四個基本要素</strong>：</p>
+<ul>
+<li><strong>收入</strong>：企業銷售產品或提供服務所得的金額</li>
+<li><strong>成本</strong>：生產產品或提供服務所直接投入的費用（如原料、直接人工、製造費用；或者對買賣業來說，就是進貨成本）</li>
+<li><strong>費用</strong>：企業為了運作而發生的各種支出，包括推銷費用、管理費用、研發費用等</li>
+<li><strong>損益</strong>：收入減去成本和費用後的結果</li>
+</ul>
+<p><strong>從損益表後面看到的東西</strong>：</p>
+<p>報表背後有一個非常重要、需要你去洞察的部分：<strong>企業到底怎麼樣獲利，也就是獲利的模式是什麼</strong>。還有：<strong>企業的致勝武器是什麼？擅長什麼？</strong> 對於未來，<strong>是否做了足夠的投資以維持或增強這個擅長的領域</strong>？</p>
+<p><strong>最重要的四個數字</strong>（大數法則的第一個原則）：</p>
+<ul>
+<li>營業收入</li>
+<li>營業毛利</li>
+<li>營業利益</li>
+<li>本期淨利</li>
+</ul>
+<p>這四個數字是損益表的骨幹。掌握它們，損益表就掌握了一半。</p>
+<h3 id="2-3-第二張報表-資產負債表">2.3 第二張報表：資產負債表</h3>
+<p><strong>報表回答的問題</strong>：企業現在擁有多少資產？這些資產從哪裡來？企業欠了多少錢？股東投了多少錢？</p>
+<p><strong>報表結構</strong>：資產負債表通常以「某一個特定時點」的形式呈現，比如「110 年 12 月 31 日」。它不是像損益表那樣跨越一整年，而是拍了一個「時間點」的快照。</p>
+<p><strong>報表的三個重要因素</strong>：</p>
+<ul>
+<li><strong>資產</strong>：企業投入的資金。要獲利，必須投入資金——這叫「將本求利」</li>
+<li><strong>負債</strong>：資金的一個來源——從別人那裡來的。包括銀行借款、應付帳款等</li>
+<li><strong>權益</strong>：資金的另一個來源——企業自己的資金。包括股東投入的股本，以及企業賺到的利潤中分配給股東後剩下的部分</li>
+</ul>
+<p><strong>最重要的平衡等式</strong>：</p>
+<p><strong>資產 = 負債 + 權益</strong></p>
+<p>這個等式是資產負債表的本質。資金必然等於其來源（別人的+自己的），這形成了一個永恆的平衡狀態。</p>
+<p><strong>從資產負債表後面看到的東西</strong>：</p>
+<ul>
+<li>企業的資本結構（是靠自有資金還是靠借款在經營）</li>
+<li>企業的財務風險程度（負債比例有多高）</li>
+<li>企業的資產品質（流動性好不好，有沒有陳舊的存貨）</li>
+</ul>
+<h3 id="2-4-第三張報表-現金流量表">2.4 第三張報表：現金流量表</h3>
+<p><strong>報表回答的問題</strong>：這一年裡，企業的現金進來了多少？出去了多少？</p>
+<p><strong>報表的本質</strong>：這張報表是資產負債表和損益表背後的基礎。為什麼？因為損益表呈現的是「會計認列的利潤」，但實際進出的現金可能完全不同。現金流量表就是讓你看到：<strong>帳上賺的錢，實際有沒有收到現金</strong>。</p>
+<p><strong>報表的三個要素</strong>：</p>
+<ul>
+<li><strong>營業活動的現金流量</strong>：企業日常經營活動帶進來或帶出去的現金</li>
+<li><strong>投資活動的現金流量</strong>：企業購置資產、進行投資帶出去的現金；出售資產帶進來的現金</li>
+<li><strong>籌資活動的現金流量</strong>：企業向銀行借款或進行現金增資帶進來的現金；發放股利帶出去的現金</li>
+</ul>
+<h3 id="2-5-第四張報表-權益變動表">2.5 第四張報表：權益變動表</h3>
+<p><strong>報表回答的問題</strong>：股東權益在這一年裡是如何變化的？</p>
+<p><strong>報表的地位</strong>：這份報表的資料其實已經在其他三個報表裡呈現出來了。所以在實務上，看財務報表時，<strong>通常只需要重點關注前三張，而不必逐行分析權益變動表</strong>。</p>
+<h3 id="2-6-四張報表之間的邏輯關係">2.6 四張報表之間的邏輯關係</h3>
+<p>這四張報表不是獨立的，而是互相支撐和驗證的：</p>
+<ul>
+<li><strong>損益表</strong>告訴你企業這一年賺或賠多少</li>
+<li><strong>資產負債表</strong>告訴你企業用什麼資金去賺（或賠）這些錢</li>
+<li><strong>現金流量表</strong>告訴你企業賺的這些錢是不是真的收到現金了</li>
+<li><strong>權益變動表</strong>總結了權益在這一年的所有變化</li>
+</ul>
+<p>當你學會同時看這三張（加上必要時的權益變動表），<strong>你就掌握了企業財務的全貌</strong>。</p>
+<hr>
+<span id="主題三"></span>
+<h2 id="主題三-損益表--企業怎麼賺錢">主題三：損益表——企業怎麼賺錢</h2>
+<h3 id="3-1-為什麼損益表最重要">3.1 為什麼損益表最重要</h3>
+<p>在四張報表中，<strong>損益表是你最應該優先學會的</strong>。為什麼？</p>
+<p>因為損益表最直接地回答了一個商業的根本問題：<strong>企業怎麼通過銷售賺錢</strong>。損益表的邏輯就是商業邏輯的邏輯——銷售減去成本，剩下的就是利潤。</p>
+<h3 id="3-2-損益表的核心公式">3.2 損益表的核心公式</h3>
+<p>損益表的所有計算都圍繞著這個基本邏輯：</p>
+<p><code></code>`</p>
+<p>營業收入</p>
+<ul>
+<li>營業成本</li>
+</ul>
+<p>= 營業毛利</p>
+<p>營業毛利</p>
+<ul>
+<li>營業費用（推銷費用 + 管理費用 + 研發費用）</li>
+</ul>
+<p>= 營業利益</p>
+<p>營業利益</p>
+<p>+/- 業外收支（利息收入、利息支出、投資收益等）</p>
+<p>= 稅前淨利</p>
+<p>稅前淨利</p>
+<ul>
+<li>所得稅費用</li>
+</ul>
+<p>= 本期淨利（也叫稅後淨利）</p>
+<p><code></code>`</p>
+<p>這個公式看起來簡單，但它隱藏了企業經營的所有祕密。</p>
+<h3 id="3-3-毛利率-企業的第一道防線">3.3 毛利率：企業的第一道防線</h3>
+<p><strong>毛利 = 營業收入 - 營業成本</strong></p>
+<p><strong>毛利率 = 毛利 / 營業收入</strong></p>
+<p>毛利率代表什麼？<strong>這是企業的附加價值的第一個體現</strong>。</p>
+<p>為什麼毛利率這麼重要？因為毛利率高或低，直接反映了企業在市場上有沒有競爭力、有沒有議價能力。</p>
+<p><strong>毛利率高的原因有幾種</strong>：</p>
+<ol>
+<li><strong>技術領先的優勢</strong>：例如台積電、大立光等。台積電的毛利率高達 51.6%，大立光甚至高達 60%。為什麼？因為他們掌握了先進的技術，競爭對手短期內無法複製，所以可以維持高價格和高利潤。</li>
+</ol>
+<ol>
+<li><strong>品牌競爭力</strong>：例如 LV、Porsche 等奢侈品品牌。他們的毛利率高，因為消費者願意為品牌支付溢價。上文提到的法式高級料理也屬於這一類——一客 6000-7000 元，背後是品牌、環境、食材的綜合價值。</li>
+</ol>
+<ol>
+<li><strong>市場地位和規模經濟</strong>：例如壟斷或寡佔市場的企業，或者通過規模優勢降低成本的企業。</li>
+</ol>
+<p><strong>毛利率低的含義</strong>：</p>
+<ul>
+<li>企業在市場上缺乏特殊競爭力</li>
+<li>企業經營的可能是低端、標準化的產品</li>
+<li>企業容易陷入價格戰</li>
+</ul>
+<h3 id="3-4-營業費用與營業利益">3.4 營業費用與營業利益</h3>
+<p>在毛利減去營業費用後，我們得到營業利益。</p>
+<p><code></code>`</p>
+<p>營業毛利 - 營業費用 = 營業利益</p>
+<p><code></code>`</p>
+<p>營業費用包括三大類：</p>
+<ul>
+<li><strong>推銷費用</strong>：廣告、銷售人員薪資、運送費等，與銷售行為直接相關</li>
+<li><strong>管理費用</strong>：辦公室租金、行政人員薪資、水電費等，企業運作的基本開銷</li>
+<li><strong>研發費用</strong>：新產品開發、技術改進、實驗費用等</li>
+</ul>
+<p>不同行業的營業費用結構差異很大，這反映了不同企業的商業模式。</p>
+<p>例如，台積電的三大營業費用中，<strong>研發費用特別高</strong>。這代表什麼？代表台積電認為，<strong>為了維持技術領先地位，研發投入是不能省的</strong>。這個洞察非常重要。</p>
+<h3 id="3-5-營業利益率與淨利率">3.5 營業利益率與淨利率</h3>
+<p><strong>營業利益率 = 營業利益 / 營業收入</strong></p>
+<p><strong>淨利率 = 本期淨利 / 營業收入</strong></p>
+<p>營業利益率反映的是企業核心業務的獲利能力，不受利息、稅金等非營業因素的影響。</p>
+<p>淨利率則是最終的獲利能力，已經扣除了所有的成本、費用和稅金。</p>
+<p><strong>為什麼要看兩個利率？</strong></p>
+<p>因為它們告訴你不同的故事：</p>
+<ul>
+<li>營業利益率高，說明企業的核心業務賺錢</li>
+<li>淨利率相對低，可能說明企業要承擔很高的利息（負債太多）或稅負</li>
+</ul>
+<p>這個差異本身就是一個信號。</p>
+<h3 id="3-6-從台積電和鴻海看兩種不同的獲利模式">3.6 從台積電和鴻海看兩種不同的獲利模式</h3>
+<p>郭榮芳用實例詳細分析了台積電和鴻海的損益表（以 110 年度為例）。</p>
+<p><strong>台積電的財務數字</strong>：</p>
+<ul>
+<li>投入的資金：期初 27,607 億 → 期末 37,255 億</li>
+<li>資金來源：負債 15,548 億（42%）、權益 21,707 億（58%）</li>
+<li>營業收入：15,874 億</li>
+<li>營業毛利：8,195 億，毛利率 <strong>51.6%</strong></li>
+<li>營業利益：6,499 億，營業利益率 <strong>40.9%</strong></li>
+<li>本期淨利：5,970 億，淨利率 <strong>37.6%</strong></li>
+</ul>
+<p><strong>鴻海的財務數字</strong>：</p>
+<ul>
+<li>投入的資金：期初 36,742 億 → 期末 39,088 億</li>
+<li>資金來源：負債 23,356 億（59%）、權益 15,732 億（41%）</li>
+<li>營業收入：59,941 億</li>
+<li>營業毛利：3,621 億，毛利率 <strong>6%</strong></li>
+<li>營業利益：1,489 億，營業利益率 <strong>2.49%</strong></li>
+<li>本期淨利：1,538 億，淨利率 <strong>2.57%</strong></li>
+</ul>
+<p><strong>兩者的根本差異</strong>：</p>
+<p>台積電：投入資金較大，創造的營收約 1.5 兆，但利潤率極高（淨利率 37.6%）。這代表<strong>資本密集、技術密集、高附加價值的商業模式</strong>。</p>
+<p>鴻海：投入的資金相似，但創造的營收是台積電的 4 倍（約 6 兆），利潤率卻很低（淨利率 2.57%）。這代表<strong>依靠經濟規模來賺錢的商業模式</strong>。</p>
+<p><strong>如何理解這個差異？</strong></p>
+<p>台積電的高毛利說明它掌握了獨特的技術，附加價值高。鴻海的低毛利說明它主要從事代工、組裝等標準化業務，附加價值相對低，所以必須靠大規模的製造和銷售來賺利潤。</p>
+<p>正因為毛利低，鴻海需要高周轉率——這引向了下一個重要主題。</p>
+<hr>
+<span id="主題四"></span>
+<h2 id="主題四-資產負債表--企業用什麼資金營運">主題四：資產負債表——企業用什麼資金營運</h2>
+<h3 id="4-1-資產負債表的核心概念">4.1 資產負債表的核心概念</h3>
+<p>資產負債表回答了一個根本問題：<strong>企業用什麼資金在營運</strong>。</p>
+<p>要獲利，企業必須投入資金。這個原則叫「將本求利」——有本錢才能賺利潤。</p>
+<p>資產負債表告訴你：</p>
+<ul>
+<li>企業投入了多少錢（資產）</li>
+<li>這些錢從哪裡來（負債和權益）</li>
+</ul>
+<h3 id="4-2-資產的構成">4.2 資產的構成</h3>
+<p>資產是企業投入的資金，它們會以各種形式存在：</p>
+<p><strong>流動資產</strong>（一年內可以轉換成現金的資產）：</p>
+<ul>
+<li>現金及現金等價物</li>
+<li>應收帳款（還沒收到的客戶款項）</li>
+<li>存貨（還沒賣出的產品）</li>
+<li>其他流動資產</li>
+</ul>
+<p><strong>非流動資產</strong>（一年以上才能轉換成現金的資產）：</p>
+<ul>
+<li>固定資產（廠房、機器設備、車輛等）</li>
+<li>無形資產（專利、商標、營業權等）</li>
+<li>長期投資</li>
+<li>其他非流動資產</li>
+</ul>
+<h3 id="4-3-負債和權益-資金的兩個來源">4.3 負債和權益：資金的兩個來源</h3>
+<p>企業的資金必然來自兩個來源：</p>
+<p><strong>負債</strong>（別人的錢）：</p>
+<ul>
+<li>短期借款</li>
+<li>應付帳款（還沒付給供應商的款項）</li>
+<li>長期借款</li>
+<li>應付債券</li>
+</ul>
+<p><strong>權益</strong>（自己的錢）：</p>
+<ul>
+<li>股本（股東最初投入的資金）</li>
+<li>資本公積（股東追加投入的資金，不算股本）</li>
+<li>保留盈餘（企業賺到的利潤中，沒有發配給股東的部分）</li>
+</ul>
+<h3 id="4-4-最重要的平衡等式及其含義">4.4 最重要的平衡等式及其含義</h3>
+<p><strong>資產 = 負債 + 權益</strong></p>
+<p>這不只是一個會計等式，它揭示了企業資本結構的本質。</p>
+<p><strong>負債比例 = 負債 / 資產</strong></p>
+<p><strong>權益比例 = 權益 / 資產</strong></p>
+<p>這兩個比例告訴你：企業依靠別人的錢和自己的錢各占多少比例。</p>
+<p>從台積電和鴻海的例子看：</p>
+<p>台積電：負債佔 42%，權益佔 58%。說明台積電傾向於用自有資金營運，對別人的錢（銀行貸款等）的依賴相對較低。</p>
+<p>鴻海：負債佔 59%，權益佔 41%。說明鴻海更多地依靠外部融資（銀行借款、應付帳款等），自有資金佔比相對較低。</p>
+<p><strong>哪種更好？</strong></p>
+<p>這沒有絕對答案。高負債比例意味著：</p>
+<ul>
+<li>優點：用更少的自有資金撬動更大的資產，如果經營得當，會提升股東的報酬率</li>
+<li>缺點：當景氣不好時，負債還是要還的，企業會面臨更大的風險</li>
+</ul>
+<p>低負債比例意味著：</p>
+<ul>
+<li>優點：企業抗風險能力更強，在經濟下行時更容易存活</li>
+<li>缺點：沒有充分利用槓桿效應，可能降低了資本效率</li>
+</ul>
+<h3 id="4-5-應收帳款和應付帳款-營運管理的關鍵">4.5 應收帳款和應付帳款：營運管理的關鍵</h3>
+<p>在資產和負債中，有兩項特別重要，直接影響企業的現金流——<strong>應收帳款</strong>和<strong>應付帳款</strong>。</p>
+<p><strong>應收帳款</strong>：客戶欠企業的錢</p>
+<ul>
+<li>應收帳款越多，說明銷售了產品但還沒收到錢</li>
+<li>如果應收帳款不斷增加，會嚴重影響企業的現金狀況</li>
+</ul>
+<p><strong>應付帳款</strong>：企業欠供應商的錢</p>
+<ul>
+<li>應付帳款越多，說明買了原料但還沒支付</li>
+<li>這暫時改善了企業的現金狀況，但最終還是要還的</li>
+</ul>
+<h3 id="4-6-存貨-資產還是包袱">4.6 存貨：資產還是包袱</h3>
+<p>存貨在資產中佔有一席之地，但它有一個特殊的性質：</p>
+<p><strong>流動性問題</strong>：</p>
+<ul>
+<li>如果存貨能很快賣出，它就是一個優質資產</li>
+<li>如果存貨長期積壓，它就變成了一個包袱——佔據現金，浪費倉儲成本</li>
+</ul>
+<p><strong>存貨的隱形成本</strong>（郭榮芳特別強調）：</p>
+<p>當資產沒有流動，它就會產生成本。這個成本包括：</p>
+<ul>
+<li>倉儲費</li>
+<li>資金佔用費（這些錢本可以用在其他地方）</li>
+<li>陳舊、過時、損壞的風險</li>
+</ul>
+<p>所以，<strong>資產越多不一定越好，關鍵是資產要能夠流動，要能夠轉換成銷售和利潤</strong>。</p>
+<hr>
+<span id="主題五"></span>
+<h2 id="主題五-現金流量表--賺錢和有現金是兩回事">主題五：現金流量表——賺錢和有現金是兩回事</h2>
+<h3 id="5-1-最常見的矛盾-帳面賺錢-實際沒現金">5.1 最常見的矛盾：帳面賺錢，實際沒現金</h3>
+<p>這是企業經營中最容易忽視、但也最致命的矛盾。</p>
+<p><strong>案例一</strong>：一個公司帳面賺了 100 萬，但老闆的帳戶裡根本沒有 100 萬。這是怎麼回事？</p>
+<p>通常有以下幾個原因：</p>
+<ul>
+<li><strong>應收帳款沒收回來</strong>：銷售了 100 萬的產品，但客戶還沒支付</li>
+<li><strong>存貨積壓</strong>：買進了原料或商品佔用了現金，但沒有被銷售出去</li>
+<li><strong>折舊</strong>：帳上確認了折舊費用（不是現金支出），但當年支付購置資產的費用（是現金支出）已經在過去年度發生</li>
+<li><strong>預付費用</strong>：提前支付了租金或保險，費用分年認列，但現金已經流出</li>
+</ul>
+<p>這就是為什麼需要現金流量表——<strong>它告訴你帳上的利潤，實際上有沒有以現金的形式進入企業</strong>。</p>
+<h3 id="5-2-現金流量表的三個部分">5.2 現金流量表的三個部分</h3>
+<p><strong>營業活動的現金流量</strong>：企業日常經營產生的現金流入和流出</p>
+<ul>
+<li>主要來源：銷售商品或提供服務收到的現金、購買原料或商品支付的現金、支付薪資、支付各種營運費用</li>
+<li>重要性：<strong>這是企業最重要的現金來源</strong>。如果營業活動沒有產生正的現金流，企業終將陷入困境</li>
+</ul>
+<p><strong>投資活動的現金流量</strong>：企業購置或出售資產時的現金流動</p>
+<ul>
+<li>流出：購置固定資產、購買投資品、進行轉投資等</li>
+<li>流入：出售資產、處分投資品等</li>
+<li>性質：通常是流出，因為企業要成長就需要投資</li>
+</ul>
+<p><strong>籌資活動的現金流量</strong>：企業向外部籌集資金或向股東分配利潤時的現金流動</p>
+<ul>
+<li>流入：銀行借款、現金增資、發行債券</li>
+<li>流出：償還貸款、發放現金股利、買回庫藏股</li>
+</ul>
+<h3 id="5-3-營業活動現金流量的決定因素">5.3 營業活動現金流量的決定因素</h3>
+<p>營業活動現金流量往往與損益表的淨利潤有很大的差異。為什麼？</p>
+<p>關鍵在於<strong>應收帳款、存貨和應付帳款</strong>的變化：</p>
+<p><strong>應收帳款增加 → 現金減少</strong></p>
+<p>當銷售增加但客戶還沒付錢時，帳面利潤增加但現金沒進來。</p>
+<p><strong>應收帳款減少 → 現金增加</strong></p>
+<p>當企業加快收款或客戶支付時，現金進來。</p>
+<p><strong>存貨增加 → 現金減少</strong></p>
+<p>當企業買進原料或囤積商品時，現金流出。</p>
+<p><strong>存貨減少 → 現金增加</strong></p>
+<p>當企業銷售存貨時，現金流入。</p>
+<p><strong>應付帳款增加 → 現金增加</strong></p>
+<p>當企業延長付款期限時，現金暫時留在企業。</p>
+<p><strong>應付帳款減少 → 現金減少</strong></p>
+<p>當企業支付供應商時，現金流出。</p>
+<p>所以，營業活動現金流量取決於兩個部分：</p>
+<ol>
+<li><strong>營業利潤</strong>——企業賺了多少</li>
+<li><strong>營運管理</strong>——應收帳款、存貨、應付帳款的管理水準</li>
+</ol>
+<h3 id="5-4-折舊和攤銷-不是現金-但影響利潤">5.4 折舊和攤銷：不是現金，但影響利潤</h3>
+<p>在分析現金流量時，有一個重要的調整項：<strong>折舊和攤銷</strong>。</p>
+<p>企業購買一台機器需要花現金，但機器的成本不是一次性在購買年度認列，而是按年份分攤。這個分攤就叫折舊。</p>
+<p>例如：購買一台 100 萬的機器，預計使用 10 年，每年折舊 10 萬。</p>
+<ul>
+<li>購買年：花了現金 100 萬（現金流出），但損益表上只認列了 10 萬的費用</li>
+<li>後續 9 年：沒有現金支出，但每年認列 10 萬的費用</li>
+</ul>
+<p><strong>重要概念</strong>：EBITDA（稅前利息折舊攤銷前利潤）</p>
+<p><code></code>`</p>
+<p>EBITDA = 本期淨利 + 利息 + 稅金 + 折舊 + 攤銷</p>
+<p><code></code>`</p>
+<p>為什麼要看 EBITDA？因為它代表企業實際產生的「現金利潤」——移除了不涉及現金的折舊和攤銷。</p>
+<h3 id="5-5-不同企業生命周期的現金流量特徵">5.5 不同企業生命周期的現金流量特徵</h3>
+<p>企業在不同階段的現金流量形態不同：</p>
+<p><strong>新創事業</strong>：</p>
+<ul>
+<li>營業活動：通常是負數（還在虧損）</li>
+<li>投資活動：負數（需要大量投資建立基礎設施）</li>
+<li>籌資活動：正數（需要融資來支撐營業和投資的現金流出）</li>
+</ul>
+<p><strong>成長公司</strong>：</p>
+<ul>
+<li>營業活動：開始轉正（開始賺錢了）</li>
+<li>投資活動：持續是負數，而且金額很大（為了支撐快速增長）</li>
+<li>籌資活動：可能有借款，但也開始有盈餘能用於還款或分配</li>
+</ul>
+<p><strong>成熟公司</strong>（如台積電）<em></em>：</p>
+<ul>
+<li>營業活動：穩定的正數（持續賺錢，而且現金能收回來）</li>
+<li>投資活動：適度的負數（持續進行必要的投資維持競爭力）</li>
+<li>籌資活動：通常是負數（用賺到的錢發放股利，逐漸降低負債）</li>
+</ul>
+<p><strong>衰退公司</strong>：</p>
+<ul>
+<li>營業活動：轉為負數（開始虧損）</li>
+<li>投資活動：減少（不再積極投資）</li>
+<li>籌資活動：正數（可能需要借款來彌補虧損）</li>
+</ul>
+<h3 id="5-6-健康永續的現金流量是什麼樣的">5.6 健康永續的現金流量是什麼樣的</h3>
+<p>郭榮芳歸納了幾個關鍵特徵：</p>
+<p><strong>第一個特徵</strong>：營業活動產生的現金流量是正數，而且長期穩定</p>
+<p>這意味著企業的商業模式在真實地產生現金，不是靠融資或出售資產在維持。</p>
+<p><strong>第二個特徵</strong>：營業活動產生的現金能覆蓋一般性的投資活動</p>
+<p>企業用自己賺的錢來進行日常的資本支出（購置設備、維護基礎設施等），而不是依靠借款。</p>
+<p><strong>第三個特徵</strong>：覆蓋投資後還有剩餘，用於發放現金股利</p>
+<p>這個剩餘就叫「自由現金流量」（Free Cash Flow）。</p>
+<p><code></code>`</p>
+<p>自由現金流量 = 營業活動現金流量 - 資本支出 - 稅金</p>
+<p><code></code>`</p>
+<p>自由現金流量代表企業可以自由應用的現金，可以用來發股利、擴張、還債或預留現金應對不景氣。</p>
+<h3 id="5-7-台積電的現金流量為什麼被日本媒體稱為-藝術品">5.7 台積電的現金流量為什麼被日本媒體稱為「藝術品」</h3>
+<p>郭榮芳詳細分析了台積電 105-110 年的現金流量表，揭示了台積電的資金規劃為什麼如此完美：</p>
+<p><strong>台積電的特徵</strong>：</p>
+<ol>
+<li><strong>營業活動現金流量長期穩定為正</strong>：</li>
+</ol>
+<p>   - 105 年：6,000+ 億</p>
+<p>   - 108 年：9,000+ 億</p>
+<p>   - 109 年：9,000+ 億</p>
+<p>   - 110 年：11,121 億</p>
+<ol>
+<li><strong>投資活動持續且適度</strong>：</li>
+</ol>
+<p>   - 每年進行大量資本支出（購置最先進的製造設備）</p>
+<p>   - 105-109 年：3,000-5,000 億</p>
+<p>   - 110 年：8,363 億（因應需求增加）</p>
+<ol>
+<li><strong>營業現金流能完全覆蓋投資並有剩餘</strong>：</li>
+</ol>
+<p>   - 110 年營業現金流 11,121 億 > 投資現金流 8,363 億</p>
+<p>   - 剩餘用於發放現金股利：2,657 億</p>
+<ol>
+<li><strong>自由現金流量長期穩定成長</strong>：</li>
+</ol>
+<p>   - 整個 6 年期間（105-110 年），自由現金流量呈現穩定增長趨勢</p>
+<p>   - 發放的現金股利也逐年增加（從 3 元、5 元、8 元、提升到 10+ 元）</p>
+<p><strong>為什麼這被稱為「藝術品」？</strong></p>
+<p>因為這代表了一個完美的資金良循環：</p>
+<ul>
+<li>用利潤支應投資（不是靠借款）</li>
+<li>投資創造未來的競爭力</li>
+<li>競爭力帶來更高的利潤</li>
+<li>利潤既用於再投資，也回饋給股東</li>
+</ul>
+<p>這正是郭榮芳想強調的：<strong>真正優秀的企業，不只是賺錢，更重要的是有健康、永續的現金流量</strong>。</p>
+<hr>
+<span id="主題六"></span>
+<h2 id="主題六-如何看懂財報--大數法則與比率分析">主題六：如何看懂財報——大數法則與比率分析</h2>
+<h3 id="6-1-財報看起來很複雜-如何入門">6.1 財報看起來很複雜，如何入門</h3>
+<p>很多人看到財務報表時的第一反應是：太複雜了，我怎麼進入？</p>
+<p>郭榮芳的答案是：<strong>掌握一個原則——大數法則，複雜性就會大幅降低。</strong></p>
+<p>大數法則有三個層次：</p>
+<p><strong>第一層：從最大的數字抓起來，然後分層分類</strong></p>
+<p>資產負債表的最大數字就三個：資產、負債、權益。掌握這三個，資產負債表就掌握了一半。</p>
+<p>損益表最重要的數字有四個：營業收入、營業毛利、營業利益、本期淨利。掌握這四個，損益表的主體就清楚了。</p>
+<p><strong>第二層：不只看金額，一定要看比率</strong></p>
+<p>毛利率 = 毛利 / 營業收入</p>
+<p>營業利益率 = 營業利益 / 營業收入</p>
+<p>淨利率 = 本期淨利 / 營業收入</p>
+<p>負債比率 = 負債 / 資產</p>
+<p>權益比率 = 權益 / 資產</p>
+<p>為什麼要看比率？因為<strong>比率移除了規模的影響，讓你能夠比較不同大小的企業</strong>。</p>
+<p>例如，台積電的淨利 5,970 億看起來遠大於一家小公司的淨利 10 億。但計算淨利率後，台積電是 37.6%，小公司可能是 15%，比率的對比就一目了然了。</p>
+<p><strong>第三層：做比較，不是看絕對值</strong></p>
+<ul>
+<li>與去年同期比：看企業的成長趨勢</li>
+<li>看三年到五年的資料分析：看企業的中期表現</li>
+<li>與同業比較：看企業在行業中的位置</li>
+</ul>
+<p>單一年份的數字沒有太多意義。一個企業的淨利率從 10% 下降到 8%，如果是行業整體下滑（所有企業都下滑了），那可能還算正常；但如果同業的淨利率還維持在 10%，那就說明這個企業出現了問題。</p>
+<h3 id="6-2-用大數法則分析台積電和鴻海-實戰例子">6.2 用大數法則分析台積電和鴻海：實戰例子</h3>
+<p>郭榮芳用台積電和鴻海的數據示範了如何應用大數法則。</p>
+<p><strong>第一步：抓出最大的四個數字</strong></p>
+<p><strong>台積電（110 年）</strong>：</p>
+<ul>
+<li>營業收入：15,874 億</li>
+<li>營業毛利：8,195 億</li>
+<li>營業利益：6,499 億</li>
+<li>本期淨利：5,970 億</li>
+</ul>
+<p><strong>鴻海（110 年）</strong>：</p>
+<ul>
+<li>營業收入：59,941 億</li>
+<li>營業毛利：3,621 億</li>
+<li>營業利益：1,489 億</li>
+<li>本期淨利：1,538 億</li>
+</ul>
+<p><strong>第二步：計算比率</strong></p>
+<p><strong>台積電</strong>：</p>
+<ul>
+<li>毛利率：8,195 / 15,874 = 51.6%</li>
+<li>營業利益率：6,499 / 15,874 = 40.9%</li>
+<li>淨利率：5,970 / 15,874 = 37.6%</li>
+</ul>
+<p><strong>鴻海</strong>：</p>
+<ul>
+<li>毛利率：3,621 / 59,941 = 6%</li>
+<li>營業利益率：1,489 / 59,941 = 2.49%</li>
+<li>淨利率：1,538 / 59,941 = 2.57%</li>
+</ul>
+<p><strong>第三步：分析對比</strong></p>
+<p>現在清楚了：</p>
+<p>台積電：毛利率 50%+，營業利益率 40%+，淨利率 37%+。這些比率都非常高，說明台積電掌握了高價值的產品和市場。</p>
+<p>鴻海：毛利率只有 6%，營業利益率 2.5%，淨利率 2.6%。所有比率都很低，說明鴻海依靠的是什麼？</p>
+<h3 id="6-3-為什麼資產周轉率對鴻海這樣的公司至關重要">6.3 為什麼資產周轉率對鴻海這樣的公司至關重要</h3>
+<p>這引入了下一個重要概念。</p>
+<hr>
+<span id="主題七"></span>
+<h2 id="主題七-企業獲利的兩種模式--高利潤-vs--高周轉">主題七：企業獲利的兩種模式——高利潤 vs. 高周轉</h2>
+<h3 id="7-1-法式料理-vs--餃子店的啟示">7.1 法式料理 vs. 餃子店的啟示</h3>
+<p>郭榮芳用一個貼近生活的例子開始這個單元：</p>
+<p>一位客戶很羨慕一家大直的法式高級料理。一客 6,000-7,000 元，食材精緻，空間高雅，而且經常客滿，需要三個月前才訂得到。客戶說：「做生意就要像這樣子，單價很高，利潤率一定很高。」</p>
+<p>但另一方面，他自己的公司很多產品線利潤率都很低，他為此很沮喪，不知道怎麼能賺錢。</p>
+<p>郭榮芳問他：「你覺得法式料理比較賺錢，還是像八方雲集這樣的餃子店比較賺錢？」</p>
+<p>客戶毫不思索地說：「當然是法式料理，單價這麼高，一定賺很多錢。八方雲集賺的都是小錢。」</p>
+<p><strong>但這個判斷是錯的。</strong> 而差別在於一個被大多數人忽視的因素：<strong>速度</strong>。</p>
+<h3 id="7-2-翻桌率與周轉率的魔法">7.2 翻桌率與周轉率的魔法</h3>
+<p>在餐廳業，有個專業術語叫「翻桌率」——一天內這個位置被客人用過幾次。</p>
+<p>法式料理一天能翻幾桌？最多 3 桌。為什麼？因為一頓法式料理要吃 2-3 個小時。</p>
+<p>餃子店一天能翻幾桌？40-50 桌。而且很容易外帶，流動性更強。</p>
+<p><strong>這就是速度的魔法</strong>：</p>
+<p><code></code>`</p>
+<p>低利潤 × 高速度 = 高利潤</p>
+<p><code></code>`</p>
+<p>數學很簡單：</p>
+<ul>
+<li>法式料理：6,000 元 × 3 桌 = 18,000 元/天</li>
+<li>假設毛利 60%，毛利 = 10,800 元/天</li>
+</ul>
+<ul>
+<li>餃子店：200-300 元 × 50 桌 = 10,000-15,000 元/天</li>
+<li>假設毛利 30%，毛利 = 3,000-4,500 元/天</li>
+</ul>
+<p>看起來法式料理贏了。但我們還要考慮投資成本和日常開銷：</p>
+<ul>
+<li>法式料理：裝潢豪華（幾百萬起跳）、租金貴（月租可能 30 萬+）</li>
+<li>餃子店：裝潢簡樸（幾十萬）、租金相對便宜（月租可能 5-10 萬）</li>
+</ul>
+<p>如果考慮每天的淨利潤和投資報酬率，<strong>八方雲集這樣的高周轉模式，在某些指標上可能完全不輸法式料理</strong>。而且，一旦開多家分店，規模優勢會更明顯。</p>
+<p><strong>郭榮芳強調：速度會創造利潤。</strong></p>
+<h3 id="7-3-資產周轉率-低利潤公司的致勝武器">7.3 資產周轉率：低利潤公司的致勝武器</h3>
+<p>現在引入一個關鍵的財務指標：</p>
+<p><code></code>`</p>
+<p>資產周轉率 = 營業收入 / 平均總資產</p>
+<p><code></code>`</p>
+<p>其中平均總資產 = （期初總資產 + 期末總資產）/ 2</p>
+<p>資產周轉率代表什麼？<strong>你投入的資產能創造多少營收</strong>。比率越高，說明資產利用效率越高。</p>
+<p>郭榮芳列出三家公司的數據（109-110 年）：</p>
+<p><strong>台積電</strong>：周轉率 0.49</p>
+<p><strong>鴻海</strong>：周轉率 1.53-1.58（是台積電的 3 倍）</p>
+<p><strong>八方雲集</strong>：周轉率 1.27-1.40（也是台積電的 3 倍）</p>
+<p>這個差異背後是什麼？</p>
+<p><strong>台積電的模式</strong>：投入很多資產（晶圓廠需要大量資本投入），但每單位資產只能產生有限的營收。為什麼還能獲利？因為<strong>利潤率極高</strong>——每元營收創造 37.6 分的淨利。</p>
+<p><strong>鴻海和八方雲集的模式</strong>：投入較少的資產（相對而言），但通過快速流轉，每單位資產能產生更多的營收。利潤率低，但速度高彌補了這一點。</p>
+<h3 id="7-4-資產報酬率公式-連接利潤率和周轉率">7.4 資產報酬率公式：連接利潤率和周轉率</h3>
+<p>最終，企業的獲利能力可以用一個綜合指標來衡量：</p>
+<p><code></code>`</p>
+<p>資產報酬率（ROA）= 本期淨利 / 平均總資產</p>
+<p><code></code>`</p>
+<p>這個公式也可以拆解為：</p>
+<p><code></code>`</p>
+<p>ROA = （本期淨利 / 營業收入）× （營業收入 / 平均總資產）</p>
+<p>     = 淨利率 × 資產周轉率</p>
+<p><code></code>`</p>
+<p><strong>這個公式揭示了一個根本的商業真理</strong>：</p>
+<p><strong>企業獲利有兩個途徑：</strong></p>
+<ol>
+<li><strong>提高淨利率</strong>（讓每元營收產生更多利潤）</li>
+<li><strong>提高資產周轉率</strong>（讓資產快速流轉）</li>
+</ol>
+<p>最理想的狀況是既高利潤又高周轉，但現實中幾乎不存在。通常企業只能擇一：</p>
+<p><strong>高淨利率的企業</strong>（如台積電）：</p>
+<ul>
+<li>依靠技術、品牌或市場地位</li>
+<li>周轉率必然較低（大量資本投入換取高品質、高價值）</li>
+<li>如果利潤率下降，企業就陷入危機</li>
+</ul>
+<p><strong>高周轉率的企業</strong>（如鴻海、八方雲集）：</p>
+<ul>
+<li>依靠規模、效率、低成本</li>
+<li>利潤率必然較低</li>
+<li>必須時刻關注成本，不能讓成本失控</li>
+</ul>
+<h3 id="7-5-高利潤率的企業需要持續投資">7.5 高利潤率的企業需要持續投資</h3>
+<p>這引出了另一個重要洞察。</p>
+<p>台積電的毛利率 51.6% 是憑空掉下來的嗎？不是。</p>
+<p>看台積電的費用結構：</p>
+<ul>
+<li>推銷費用：相對較低</li>
+<li>管理費用：適度</li>
+<li><strong>研發費用：非常高</strong></li>
+</ul>
+<p>為什麼台積電敢在研發上投入這麼多錢？因為它知道，<strong>只有持續的技術創新，才能維持高利潤率</strong>。今年不投資研發，明年就可能被競爭對手超越，利潤率就會下降。</p>
+<p>相反，低周轉率的企業最害怕什麼？<strong>被迫降價進行價格戰</strong>。一旦利潤率被壓低，由於周轉率本來就低，就沒有任何緩衝空間了。</p>
+<p>所以，<strong>郭榮芳給出的建議是</strong>：</p>
+<p><strong>如果你是高利潤率企業</strong>：要讓你的利潤率發揮到極致，你一定要投資在<strong>附加價值上</strong>——技術、品牌、服務品質。</p>
+<p><strong>如果你是低利潤率企業</strong>：要讓高周轉率創造利潤，你要投資在<strong>運營效率和規模</strong>上——供應鏈優化、流程自動化、擴大市場佔有率。</p>
+<p>這不是兩種模式的高下之分，而是<strong>根據自己的商業模式，把自己的優勢發揮到極致</strong>。</p>
+<h3 id="7-6-個人生涯的啟示">7.6 個人生涯的啟示</h3>
+<p>郭榮芳進一步延伸了這個觀點到個人生涯規劃：</p>
+<p><strong>高利潤率公司有點像專業型人才</strong>：</p>
+<ul>
+<li>在某個領域不斷深化專業</li>
+<li>因為專業稀缺，所以議價能力強（高利潤）</li>
+<li>但受限於單人的時間和能力（周轉率低）</li>
+<li>需要持續投資（進修、研究）來維持優勢</li>
+</ul>
+<p><strong>高周轉率公司有點像通才型人才</strong>：</p>
+<ul>
+<li>跨越多個領域，綜合能力強</li>
+<li>時間和精力能應用到更多項目（周轉率高）</li>
+<li>單項的付費相對較低（利潤率低）</li>
+<li>需要不斷拓展，維持總體收入</li>
+</ul>
+<p><strong>郭榮芳的觀點是</strong>：了解自己屬於哪種型態，然後就在那個方向上發揮到極致，就會成功。</p>
+<hr>
+<span id="主題八"></span>
+<h2 id="主題八-不能省的成本--關鍵要素投資">主題八：不能省的成本——關鍵要素投資</h2>
+<h3 id="8-1-景氣不好時為什麼有些成本千萬不能省">8.1 景氣不好時為什麼有些成本千萬不能省</h3>
+<p>當景氣不好時，企業都想節約成本。但郭榮芳提出了一個反直覺的觀點：<strong>有些成本，越是景氣不好越不能省</strong>。</p>
+<p>因為某些成本，它們直接決定了企業的競爭力和收入。省了這些成本，短期省了錢，長期卻會失去收入和利潤。</p>
+<h3 id="8-2-毛利率背後隱藏的投資">8.2 毛利率背後隱藏的投資</h3>
+<p>以台積電為例。台積電的毛利率為什麼這麼高（51.6%）？</p>
+<p>答案不是因為台積電的產品定價高，而是因為台積電掌握了獨特的技術，使得它能以較低的成本生產高價值的產品。</p>
+<p><strong>但這個技術優勢是怎麼來的？</strong></p>
+<p>看台積電的營業費用結構：</p>
+<ul>
+<li>推銷費用：佔毛利的比例相對較小</li>
+<li>管理費用：佔毛利的比例適度</li>
+<li><strong>研發費用：佔毛利的比例非常高</strong></li>
+</ul>
+<p>如果台積電在景氣差時減少研發投資，短期內毛利率可能不會下降（已經有的技術還在帶來利潤）。但長期呢？<strong>競爭對手會不斷進步，台積電的技術優勢會逐漸被蠶食，最後毛利率就會下降</strong>。</p>
+<p>這就是為什麼台積電即使在景氣周期中，也持續保持高額的研發投入。</p>
+<h3 id="8-3-附加價值的三個來源">8.3 附加價值的三個來源</h3>
+<p>毛利率高代表企業有附加價值。這個附加價值從何而來？</p>
+<p><strong>第一個來源：技術領先</strong></p>
+<p>如台積電、大立光。他們掌握了同行難以複製的製造技術，因此能維持高價格。</p>
+<p><strong>第二個來源：品牌競爭力</strong></p>
+<p>如 LV、Porsche、法式高級料理。消費者願意為品牌支付溢價。</p>
+<p><strong>第三個來源：市場地位</strong></p>
+<p>如壟斷或寡佔市場的企業，或擁有獨特資源的企業。</p>
+<p>但是，<strong>無論哪種來源，都需要持續的投資來維持</strong>。</p>
+<ul>
+<li>技術優勢需要研發投資</li>
+<li>品牌優勢需要品牌建設投資（廣告、維持品質等）</li>
+<li>市場地位需要投資來維持競爭力</li>
+</ul>
+<h3 id="8-4--資產沒有流動就會產生成本-的深層含義">8.4 「資產沒有流動就會產生成本」的深層含義</h3>
+<p>郭榮芳強調了一個看似反常但極其重要的概念：<strong>資產沒有流動，反而會產生成本</strong>。</p>
+<p>例如：</p>
+<ul>
+<li>囤積的存貨需要倉儲費用，佔用的資金可能有機會成本，還面臨陳舊、損壞的風險</li>
+<li>應收帳款遲遲無法收回，企業的資金被鎖定，無法用於其他用途</li>
+</ul>
+<p>所以，<strong>即使在景氣差時，也要維持良好的資產流動性</strong>。這不是成本，而是投資——投資於企業的健康。</p>
+<h3 id="8-5-關鍵成本與非關鍵成本">8.5 關鍵成本與非關鍵成本</h3>
+<p>如何區分什麼是「不能省的成本」，什麼是可以省的成本？</p>
+<p><strong>不能省的成本</strong>（關鍵要素投資）：</p>
+<ul>
+<li>直接影響企業的核心競爭力的成本（研發、品牌建設、員工培訓等）</li>
+<li>維持企業正常運作的必要成本（設備維護、基礎設施等）</li>
+<li>關係到資產流動性的成本（應收帳款管理、存貨管理等）</li>
+</ul>
+<p><strong>可以省的成本</strong>（非關鍵的行政支出）：</p>
+<ul>
+<li>不直接涉及核心業務的開銷（某些行政費用、非必要的出差等）</li>
+<li>可以通過流程優化而減少的成本（重複性的工作、浪費性的開支等）</li>
+</ul>
+<h3 id="8-6-錯誤的應對方式">8.6 錯誤的應對方式</h3>
+<p>有些企業在景氣差時犯了一個常見的錯誤：<strong>盲目削減成本，包括關鍵要素投資</strong>。</p>
+<p>例如：</p>
+<ul>
+<li>停止研發項目以節省支出</li>
+<li>減少員工培訓預算</li>
+<li>推遲重要的設備更新</li>
+</ul>
+<p>短期內，財報看起來改善了（費用減少了）。但<strong>長期的結果是公司的競爭力被逐步削弱</strong>。等到景氣回暖，公司發現自己已經落後於競爭對手，很難追趕。</p>
+<p>郭榮芳的建議是：<strong>在景氣不好時，聰明的公司會保護其關鍵要素投資，而是在非關鍵的、浪費性的支出上進行削減</strong>。</p>
+<p>這需要管理層對自己的業務有深刻的理解——知道什麼是關鍵，什麼是浪費。</p>
+<hr>
+<span id="主題九"></span>
+<h2 id="主題九-資產流動與營運管理">主題九：資產流動與營運管理</h2>
+<h3 id="9-1-為什麼應收帳款-存貨-應付帳款這麼重要">9.1 為什麼應收帳款、存貨、應付帳款這麼重要</h3>
+<p>在資產負債表和現金流量表中，有三個項目反覆出現，對企業的現金狀況影響最大：</p>
+<p><strong>應收帳款</strong>（應該收到的款項）</p>
+<p><strong>存貨</strong>（還沒賣出的產品）</p>
+<p><strong>應付帳款</strong>（應該支付的款項）</p>
+<p>這三項的管理水準，直接決定了企業的現金流量。</p>
+<h3 id="9-2-應收帳款的危害">9.2 應收帳款的危害</h3>
+<p>如果應收帳款不斷增加，看起來銷售增加了（營收增加），但實際上企業的現金沒有進來。</p>
+<p>這會產生什麼後果？</p>
+<p><strong>第一個後果：現金壓力</strong></p>
+<p>企業賺的錢沒有收到，但該支付的費用（員工工資、原料款項等）還是要支付。長期下去，企業就會陷入現金短缺的困境。</p>
+<p><strong>第二個後果：逾期無法收回的風險</strong></p>
+<p>應收帳款拖得越久，收不回的風險越高。企業最終可能被迫提列呆帳，直接衝擊利潤。</p>
+<h3 id="9-3-存貨的管理">9.3 存貨的管理</h3>
+<p>存貨如果管理不好，有兩個極端：</p>
+<p><strong>存貨過多</strong>：</p>
+<ul>
+<li>佔用大量現金</li>
+<li>倉儲成本高</li>
+<li>面臨陳舊、損壞的風險</li>
+<li>市場變化時可能無法銷售</li>
+</ul>
+<p><strong>存貨過少</strong>：</p>
+<ul>
+<li>可能無法滿足市場需求，失去銷售機會</li>
+<li>在緊急訂單時無法應對</li>
+</ul>
+<p>郭榮芳強調了一個案例中的異常現象：一個公司的存貨售貨天數異常低（3.39 天就賣出去了）。</p>
+<p>表面上看，存貨流轉得很快，這是好事。但如果與該公司的銷售增長模式一起看，有可能暗示了什麼？可能暗示了<strong>銷售數字中有造假的成分</strong>——把沒有真實銷售的產品計入了銷售，所以帳面上顯示的是「非常快速的流轉」。</p>
+<p>這提醒我們：<strong>異常好的數據，有時也是一個警訊</strong>。</p>
+<h3 id="9-4-應付帳款的角色">9.4 應付帳款的角色</h3>
+<p>應付帳款是企業向供應商借用的「免息貸款」。延長付款期限，企業可以暫時保留現金。</p>
+<p>但是，<strong>應付帳款不能無限延長</strong>。最終還是要付的。如果企業系統性地延長付款期限，供應商會：</p>
+<ul>
+<li>要求更高的價格以彌補資金成本</li>
+<li>拒絕繼續供貨</li>
+<li>要求現金預付</li>
+</ul>
+<p>所以，應付帳款雖然能改善短期現金狀況，但<strong>過度依賴會傷害企業與供應商的關係，長期反而增加了成本</strong>。</p>
+<h3 id="9-5-營運管理的關鍵指標">9.5 營運管理的關鍵指標</h3>
+<p><strong>應收帳款收現天數</strong>：</p>
+<p>平均多少天才能收到客戶的款項？</p>
+<p><code></code>`</p>
+<p>應收帳款收現天數 = 應收帳款 / 日均銷售額</p>
+<p><code></code>`</p>
+<p>收現天數越短越好，說明企業的銷售收款能力強。</p>
+<p><strong>存貨平均售貨天數</strong>：</p>
+<p>存貨平均需要多久才能銷售出去？</p>
+<p><code></code>`</p>
+<p>存貨售貨天數 = 存貨 / 日均銷售成本</p>
+<p><code></code>`</p>
+<p>售貨天數越短越好，但不能異常短（可能暗示問題）。</p>
+<p><strong>應付帳款支付天數</strong>：</p>
+<p>企業平均多少天才支付供應商款項？</p>
+<p><code></code>`</p>
+<p>應付帳款支付天數 = 應付帳款 / 日均購置成本</p>
+<p><code></code>`</p>
+<p>適度延長支付期限對現金流有幫助，但要平衡與供應商的關係。</p>
+<p><strong>營業周期</strong>：</p>
+<p><code></code>`</p>
+<p>營業周期 = 應收帳款收現天數 + 存貨售貨天數 - 應付帳款支付天數</p>
+<p><code></code>`</p>
+<p>營業周期代表從支付原料款到收回銷售款需要多久。周期越短越好，因為企業需要佔用的資金越少。</p>
+<h3 id="9-6-營運管理如何影響現金流量">9.6 營運管理如何影響現金流量</h3>
+<p>郭榮芳用一個具體案例展示：</p>
+<p>一家企業的應收帳款收現天數，從 135 天增加到 205 天。這意味著什麼？</p>
+<p>意味著<strong>企業銷售的錢，收回來用了越來越長的時間</strong>。帳面上說賺了錢，但現金一直沒進來。</p>
+<p>結合投資活動（企業還在進行大量投資），這家企業的資金壓力會越來越大。最終，當應收帳款無法全部收回時，企業被迫提列呆帳，損益表才反映出真實情況——大幅虧損。</p>
+<hr>
+<span id="主題十"></span>
+<h2 id="主題十-明明賺錢為什麼還會倒閉--黑字倒閉的警訊">主題十：明明賺錢為什麼還會倒閉——黑字倒閉的警訊</h2>
+<h3 id="10-1-黑字倒閉是什麼">10.1 黑字倒閉是什麼</h3>
+<p>「黑字倒閉」指的是企業的帳面上還在賺錢（損益表顯示利潤為正），但企業卻因為現金不足而倒閉。</p>
+<p>這聽起來很矛盾，但實際上非常常見。郭榮芳提供了幾個具體案例。</p>
+<h3 id="10-2-案例一-製造機殼的公司">10.2 案例一：製造機殼的公司</h3>
+<p><strong>財務報表表現</strong>：</p>
+<ul>
+<li>94 年：營收 84 億，淨利 4.2 億</li>
+<li>95 年：營收 73 億，淨利 1 億多</li>
+<li>96 年：營收 69 億，淨利虧損 11 億</li>
+<li>97 年 8 月：資金不足，跳票</li>
+</ul>
+<p><strong>表面分析</strong>：</p>
+<ul>
+<li>94-95 年帳面上賺錢</li>
+<li>流動比率 2.5（流動資產是流動負債的 2.5 倍）——看起來很安全</li>
+<li>負債比率 43%——沒有超過 50%，看起來還好</li>
+</ul>
+<p><strong>但實際發生了什麼</strong>：</p>
+<p>看現金流量：</p>
+<ul>
+<li>93 年：帳面淨利 5.9 億，加上折舊攤銷，EBITDA 7.4 億，但營業活動現金流是 <strong>-11 億</strong>（現金流出）</li>
+<li>94 年：帳面淨利 4.2 億，EBITDA 6.1 億，但營業活動現金流是 <strong>-7.8 億</strong>（現金流出）</li>
+<li>95 年：帳面淨利 1 億，營業活動現金流是 <strong>4.3 億</strong>（終於有正數）</li>
+</ul>
+<p><strong>三年合計</strong>：</p>
+<p>帳面淨利總共賺了 11 億多，但<strong>營業活動現金流是 -15 億</strong>（淨流出）。</p>
+<p><strong>原因在哪裡</strong>：</p>
+<p>應收帳款不斷增加：</p>
+<ul>
+<li>93 年：30 億</li>
+<li>94 年：40 億</li>
+<li>95 年：42 億</li>
+<li>96 年：49 億</li>
+</ul>
+<p><strong>企業的錢都卡在應收帳款裡</strong>。帳面上說賺了錢，但實際上客戶還沒付款。</p>
+<p>到了 96 年，應收帳款的問題變得不可迴避，企業被迫提列呆帳（認為無法收回的部分），導致 96 年大幅虧損 11 億。</p>
+<p><strong>結論</strong>：這家企業的真實情況是：產品銷出去了，但客戶沒有按時支付（或根本無法支付）。企業需要支付員工工資、原料款項，但現金沒進來。最終在 97 年資金耗盡，跳票。</p>
+<h3 id="10-3-案例二-太陽能公司">10.3 案例二：太陽能公司</h3>
+<p><strong>財務報表表現</strong>：</p>
+<ul>
+<li>2006 年：營收 33.9 億，EPS 12 元</li>
+<li>2007 年：營收 59.7 億，EPS 12.64 元</li>
+<li>2008 年：營收 135.9 億，EPS 8.83 元</li>
+</ul>
+<p>看起來營收在爆發式增長，EPS 也不低。</p>
+<p><strong>但隱藏的問題</strong>：</p>
+<ol>
+<li><strong>營收成長伴隨利潤率下降</strong>：</li>
+</ol>
+<p>   - 毛利率：25% → 13% → 12%</p>
+<p>   - 這不是「價值型成長」，而是「利潤率被壓縮的成長」</p>
+<ol>
+<li><strong>現金流量的差距很大</strong>：</li>
+</ol>
+<div class="table-wrap"><table>
+<tr><th>年份</th><th>淨利</th><th>EBITDA</th><th>營業活動現金流</th><th>投資活動</th></tr>
+<tr><td>2006</td><td>7.3</td><td>7.8</td><td>-10.3</td><td>-7.2</td></tr>
+<tr><td>2007</td><td>7.7</td><td>8.8</td><td>-32.4</td><td>-20</td></tr>
+<tr><td>2008</td><td>12.1</td><td>14.4</td><td>1.8</td><td>-60</td></tr>
+</table></div>
+<p>帳面上賺了 27 億左右（3 年合計），但營業活動現金流是負的或非常小。</p>
+<ol>
+<li><strong>融資和投資的惡性循環</strong>：</li>
+</ol>
+<p>   - 營業活動沒有現金流入，企業卻在進行大量投資（購置生產設備以應對訂單增加）</p>
+<p>   - 投資活動 2008 年就高達 60 億</p>
+<p>   - 錢從哪裡來？<strong>從融資活動</strong>：借款每年增加 30-50 億</p>
+<ol>
+<li><strong>資本支出的爆炸</strong>：</li>
+</ol>
+<p>   - 3 年的資本支出總計 58 億</p>
+<p>   - 無形資產增加 54 億</p>
+<p>   - 總計 112 億的資本支出，但營業現金流無法支應</p>
+<p><strong>真實情況</strong>：</p>
+<p>企業在太陽能產業蓬勃發展時（2006-2008），接到大量訂單，營收爆發。但為了滿足這些訂單，需要大量的設備投資和前期預付（預付貨款給供應商以搶訂單）。</p>
+<p>結果：</p>
+<ul>
+<li>帳面上說賺了很多錢（高銷售額）</li>
+<li>但現金沒有進來（供應商要求預付、客戶延遲支付）</li>
+<li>企業只能靠借款支撐</li>
+<li>到了 2009 年，太陽能市場崩潰（中國補貼政策改變，太陽能價格大幅下跌）</li>
+<li>企業無法消化之前的高投資，資金危機爆發</li>
+</ul>
+<p>這家公司最後被迫進行巨額增資（英業達以 22 元／股增資），被外資接手。</p>
+<h3 id="10-4-黑字倒閉的四個常見原因">10.4 黑字倒閉的四個常見原因</h3>
+<p>根據這些案例，郭榮芳歸納了黑字倒閉的四個常見原因：</p>
+<p><strong>1. 應收帳款增加，但沒有收回現金</strong></p>
+<p>企業銷售增加，看起來營收增加、利潤增加。但實際上，客戶的款項沒有按時支付或無法支付，導致企業的現金始終短缺。</p>
+<p><strong>2. 存貨積壓</strong></p>
+<p>企業購進了原料或囤積了商品，佔用了現金。如果存貨無法迅速銷售，現金就被鎖定了。</p>
+<p><strong>3. 營收成長伴隨利潤率下降</strong></p>
+<p>企業為了維持增長，不斷降價或進行大額投資。結果營收增加了，但利潤率卻下降了。投資需要的現金支出，遠大於盈利帶來的現金流入。</p>
+<p><strong>4. 過度投資，營業現金流無法支應</strong></p>
+<p>企業為了未來的增長而進行大量投資（固定資產、研發等）。但投資需要現金，而營業活動的現金流卻無法覆蓋這些投資。企業最終依靠融資（借款、增資）來支持投資。一旦融資渠道關閉（銀行不願再貸款，市場對公司前景喪失信心），企業就陷入困境。</p>
+<h3 id="10-5-黑字倒閉背後的管理失誤">10.5 黑字倒閉背後的管理失誤</h3>
+<p>郭榮芳指出，黑字倒閉往往不是因為業務不好，而是因為<strong>管理層沒有很好地理解現金流量與利潤的差異</strong>。</p>
+<p>許多管理層看著損益表說「我們賺錢了」，就覺得企業運作正常。但他們忽略了現金流量表，沒有看到「我們賺的錢沒有收回現金」。</p>
+<p>這就是為什麼郭榮芳一開始強調：<strong>掌握公司狀況，一定要從財務報表著手，而且要同時看損益表和現金流量表，絕對不能只看其中一張</strong>。</p>
+<hr>
+<span id="主題十一"></span>
+<h2 id="主題十一-賺錢企業-vs--地雷股--風險評估的檢查清單">主題十一：賺錢企業 vs. 地雷股——風險評估的檢查清單</h2>
+<h3 id="11-1-什麼是地雷股">11.1 什麼是地雷股</h3>
+<p>「地雷股」是指那些帳面上看起來還不錯（甚至在賺錢），但實際上隱藏著重大財務風險的股票。</p>
+<p>這些公司最終可能面臨資金危機、被迫大幅減值，或直接倒閉。</p>
+<h3 id="11-2-地雷股的常見徵兆">11.2 地雷股的常見徵兆</h3>
+<p>郭榮芳基於多年的諮詢經驗，列出了幾個地雷股的常見徵兆：</p>
+<p><strong>徵兆一：應收帳款顯著偏高或顯著高於同業</strong></p>
+<p>這意味著：</p>
+<ul>
+<li>企業的銷售款項沒有有效收回</li>
+<li>企業的銷售信譽控制有問題</li>
+<li>有可能銷售中存在虛構成分</li>
+</ul>
+<p><strong>徵兆二：與此同時，存貨顯著偏低</strong></p>
+<p>結合徵兆一，這會產生一個可疑的組合：</p>
+<ul>
+<li>銷售很多（導致應收帳款高）</li>
+<li>但存貨很少（已經全部銷售出去了）</li>
+<li>這種組合在現實中是罕見的（通常高銷售會伴隨一定的存貨），有可能暗示銷售中有造假</li>
+</ul>
+<p><strong>徵兆三：營業活動現金流量顯著低於獲利，或經常為負數</strong></p>
+<p>這是最直接的危訊號：</p>
+<ul>
+<li>帳面說賺了錢</li>
+<li>但實際上沒有現金流入</li>
+<li>或者說，賺的錢沒有收回來</li>
+</ul>
+<p><strong>徵兆四：投資不斷出去，營業活動沒有現金進來，錢從融資活動來</strong></p>
+<p>這形成了一個危險的循環：</p>
+<ul>
+<li>企業在進行大量投資（可能是為了維持成長，也可能是為了支撐虛假的業績）</li>
+<li>營業活動產生不了現金</li>
+<li>企業只能靠借款或增資來支持投資和日常運作</li>
+<li>這種模式是不可持續的，最終會因為融資枯竭而崩潰</li>
+</ul>
+<p><strong>徵兆五：負債比例顯著偏高</strong></p>
+<p>這加重了風險：</p>
+<ul>
+<li>企業已經高度依靠外部融資</li>
+<li>一旦現金流出現問題，償還能力會迅速下降</li>
+</ul>
+<h3 id="11-3-徵兆的組合判斷法">11.3 徵兆的組合判斷法</h3>
+<p>郭榮芳強調，<strong>單個徵兆不足以確定一家公司是地雷股，但徵兆的組合很重要</strong>。</p>
+<ul>
+<li><strong>出現 1 個徵兆</strong>：需要注意，但不必恐慌</li>
+<li><strong>出現 2 個徵兆</strong>：要進一步分析，警惕度提升</li>
+<li><strong>出現 3 個徵兆</strong>：危險信號閃起，慎重對待</li>
+<li><strong>出現 4 個或以上徵兆</strong>：很可能就是地雷股，要特別謹慎</li>
+</ul>
+<h3 id="11-4-其他可疑的信號">11.4 其他可疑的信號</h3>
+<p>除了上述徵兆，還有其他需要注意的情況：</p>
+<p><strong>徵兆六：過度的業外投資或投資效能顯著偏低</strong></p>
+<p>有些企業帳面上的利潤，主要來自於業外投資（房地產投資、股票投資等），而不是核心業務。</p>
+<p>這有幾個問題：</p>
+<ul>
+<li>業外投資通常不可持續（不像核心業務有持續的客戶和收入）</li>
+<li>如果投資效能偏低（投入很多但回報不足），說明管理層的投資決策有問題</li>
+</ul>
+<p><strong>徵兆七：銷售客戶或應收帳款集中在少數客戶</strong></p>
+<p>危險在於：</p>
+<ul>
+<li>企業過度依賴少數客戶</li>
+<li>如果這些客戶失去，營收會大幅下滑</li>
+<li>如果這些大客戶的規模或資本額與銷售金額不相當，有可能是「實質關係人」（如相關方、關聯企業），甚至是虛構的</li>
+</ul>
+<p><strong>徵兆八：公司或集團的組織架構非常複雜且沒有必要</strong></p>
+<p>這可能暗示：</p>
+<ul>
+<li>企業在進行不透明的資金流動</li>
+<li>企業的控制結構不清楚，股東權益可能被稀釋</li>
+<li>歷史上的反面教材（如力霸集團）就是因為組織架構異常複雜，最終被查出資金挪用和詐欺</li>
+</ul>
+<h3 id="11-5-虛假報表的特徵">11.5 虛假報表的特徵</h3>
+<p>郭榮芳進一步指出，當企業報表出現上述組合徵兆時，有可能不只是經營困難，而是報表本身存在虛假成分。</p>
+<p>常見的虛假操作包括：</p>
+<p><strong>虛假銷售</strong>：</p>
+<ul>
+<li>企業與關聯方進行循環銷售（賣給它，它再賣給別人）</li>
+<li>企業向無力支付的客戶銷售，帳面認列銷售但實際無法收現</li>
+<li>企業在期末進行大額銷售，但客戶有實際的「返貨」協議</li>
+</ul>
+<p><strong>虛假資產</strong>：</p>
+<ul>
+<li>應收帳款中包含無法收回的壞帳，但沒有適當提列</li>
+<li>存貨中包含滯銷品或報廢品，但按成本入帳</li>
+</ul>
+<p><strong>隱藏負債</strong>：</p>
+<ul>
+<li>企業向關聯方借款但未在報表中明示</li>
+<li>企業進行表外融資，避免在負債表上呈現</li>
+</ul>
+<p>郭榮芳強調，這些虛假操作的目的通常是<strong>美化報表以便進行融資或圈錢</strong>。一旦被揭露，企業的股價往往會大幅下跌，投資者的損失可能是災難性的。</p>
+<h3 id="11-6-風險評估的完整檢查清單">11.6 風險評估的完整檢查清單</h3>
+<p>基於以上分析，郭榮芳總結了一份投資者或內部管理層可以用來進行風險評估的檢查清單：</p>
+<p><strong>財務指標檢查</strong>：</p>
+<ul>
+<li>[ ] 應收帳款佔營收的比例是否合理？與同業相比是否偏高？</li>
+<li>[ ] 存貨佔營收成本的比例是否合理？是否異常低？</li>
+<li>[ ] 營業活動現金流是否為正？佔淨利潤的比例是否至少 60%？</li>
+<li>[ ] 投資活動現金流是否能由營業現金流覆蓋？</li>
+<li>[ ] 負債比例是否在合理範圍內（通常不超過 60%）？</li>
+<li>[ ] 公司是否有持續發展的融資依賴（年年都要借新錢來支持運作）？</li>
+</ul>
+<p><strong>業務質量檢查</strong>：</p>
+<ul>
+<li>[ ] 銷售客戶是否集中在少數客戶？（應該有多元化的客戶基礎）</li>
+<li>[ ] 大客戶的規模、資本額與採購金額是否相當？</li>
+<li>[ ] 企業的核心業務是否為利潤主要來源？（還是主要靠業外投資）</li>
+</ul>
+<p><strong>組織與治理檢查</strong>：</p>
+<ul>
+<li>[ ] 公司的組織架構是否清楚且合理？</li>
+<li>[ ] 是否存在不必要的複雜層級或關聯企業？</li>
+<li>[ ] 股東與管理層的權責是否清晰？</li>
+</ul>
+<p><strong>趨勢檢查</strong>：</p>
+<ul>
+<li>[ ] 各指標的三年或五年趨勢是什麼？是否在惡化？</li>
+<li>[ ] 與同業的對標情況如何？</li>
+<li>[ ] 企業是否在進行持續的、可解釋的策略調整，還是數據異常波動？</li>
+</ul>
+<p>如果檢查中發現 3 個或以上的紅旗項，投資者應該提高警惕，深入調查或考慮迴避這個投資機會。</p>
+<h3 id="11-7-回到企業經營層面">11.7 回到企業經營層面</h3>
+<p>從地雷股的識別回到企業經營層面，郭榮芳的建議是：</p>
+<p><strong>對於經營者</strong>：</p>
+<p>不要為了短期的帳面業績而進行不可持續的操作（如虛假銷售、過度投資）。長期的健康經營——真實的營收、可控的成本、健康的現金流——才是企業長期價值的基礎。</p>
+<p><strong>對於投資者或債權人</strong>：</p>
+<p>不要被表面的 EPS 或營收數字迷惑。深入分析現金流量、應收帳款、存貨和融資情況，才能識別出那些表面光鮮但內實脆弱的企業。</p>
+<p><strong>對於內部管理層或審計人員</strong>：</p>
+<p>財務報表是企業的「體檢報告」。認真閱讀這份報告，不只看利潤，更要看現金流、看資產品質、看融資情況，這樣才能早期發現企業可能存在的問題，及時採取行動。</p>
+<hr>
+<h2 id="附錄一-核心公式速查表">附錄一：核心公式速查表</h2>
+<h3 id="損益表相關公式">損益表相關公式</h3>
+<p><code></code>`</p>
+<p>營業毛利 = 營業收入 - 營業成本</p>
+<p>營業毛利率 = 營業毛利 / 營業收入</p>
+<p>營業利益 = 營業毛利 - 營業費用</p>
+<p>         (= 營業收入 - 營業成本 - 營業費用)</p>
+<p>營業利益率 = 營業利益 / 營業收入</p>
+<p>本期淨利 = 稅前淨利 - 所得稅費用</p>
+<p>淨利率 = 本期淨利 / 營業收入</p>
+<p>EBITDA = 本期淨利 + 利息 + 稅金 + 折舊 + 攤銷</p>
+<p><code></code>`</p>
+<h3 id="資產負債表相關公式">資產負債表相關公式</h3>
+<p><code></code>`</p>
+<p>資產 = 負債 + 權益</p>
+<p>負債比率 = 負債 / 資產</p>
+<p>權益比率 = 權益 / 資產</p>
+<p>流動比率 = 流動資產 / 流動負債</p>
+<p><code></code>`</p>
+<h3 id="資產周轉與報酬率公式">資產周轉與報酬率公式</h3>
+<p><code></code>`</p>
+<p>資產周轉率 = 營業收入 / 平均總資產</p>
+<p>資產報酬率（ROA）= 本期淨利 / 平均總資產</p>
+<p>                = 淨利率 × 資產周轉率</p>
+<p>                = (本期淨利 / 營業收入) × (營業收入 / 平均總資產)</p>
+<p><code></code>`</p>
+<h3 id="營運管理指標">營運管理指標</h3>
+<p><code></code>`</p>
+<p>應收帳款收現天數 = 應收帳款 / 日均銷售額</p>
+<p>存貨平均售貨天數 = 存貨 / 日均銷售成本</p>
+<p>應付帳款支付天數 = 應付帳款 / 日均購置成本</p>
+<p>營業周期 = 應收帳款收現天數 + 存貨售貨天數 - 應付帳款支付天數</p>
+<p><code></code>`</p>
+<h3 id="現金流量相關公式">現金流量相關公式</h3>
+<p><code></code>`</p>
+<p>自由現金流量 = 營業活動現金流量 - 資本支出 - 稅金</p>
+<p>或者</p>
+<p>自由現金流量 = 營業活動現金流量 - 營業活動所需的資本支出</p>
+<p><code></code>`</p>
+<hr>
+<h2 id="附錄二-不同企業類型的典型特徵">附錄二：不同企業類型的典型特徵</h2>
+<h3 id="高利潤率-低周轉率的企業-如台積電">高利潤率、低周轉率的企業（如台積電）</h3>
+<p><strong>財務特徵</strong>：</p>
+<ul>
+<li>毛利率：40% 以上</li>
+<li>營業利益率：30% 以上</li>
+<li>淨利率：20% 以上</li>
+<li>資產周轉率：0.5 倍以下</li>
+<li>資產報酬率：仍然較高（因為利潤率極高）</li>
+</ul>
+<p><strong>競爭優勢基礎</strong>：</p>
+<ul>
+<li>技術領先、品牌溢價、獨特資源或市場地位</li>
+</ul>
+<p><strong>經營重點</strong>：</p>
+<ul>
+<li>研發投資（維持技術優勢）</li>
+<li>品牌建設（維持品牌溢價）</li>
+<li>利潤率維護（避免價格戰）</li>
+</ul>
+<p><strong>風險點</strong>：</p>
+<ul>
+<li>如果競爭對手追上技術，利潤率會迅速下降</li>
+<li>如果市場需求變化，高成本結構的企業調整困難</li>
+</ul>
+<h3 id="低利潤率-高周轉率的企業-如鴻海-八方雲集">低利潤率、高周轉率的企業（如鴻海、八方雲集）</h3>
+<p><strong>財務特徵</strong>：</p>
+<ul>
+<li>毛利率：10% 以下</li>
+<li>營業利益率：2-5%</li>
+<li>淨利率：2-3%</li>
+<li>資產周轉率：1.5 倍以上</li>
+<li>資產報酬率：通過高周轉彌補低利潤率</li>
+</ul>
+<p><strong>競爭優勢基礎</strong>：</p>
+<ul>
+<li>規模經濟、成本優勢、高效運營</li>
+</ul>
+<p><strong>經營重點</strong>：</p>
+<ul>
+<li>成本控制（毫厘之差就會影響利潤）</li>
+<li>流程優化（提高周轉速度）</li>
+<li>市場擴張（做大規模以分攤固定成本）</li>
+</ul>
+<p><strong>風險點</strong>：</p>
+<ul>
+<li>成本控制失誤會直接侵蝕利潤（利潤率本來就低）</li>
+<li>市場飽和時無法再提高周轉率</li>
+<li>容易陷入價格戰</li>
+</ul>
+<hr>
+<h2 id="附錄三-讀這份知識庫的建議">附錄三：讀這份知識庫的建議</h2>
+<h3 id="如果你是企業經營者或管理層">如果你是企業經營者或管理層</h3>
+<p>建議按照以下順序閱讀：</p>
+<ol>
+<li>主題一（為什麼要看財報）</li>
+<li>主題二、三、四、五（四張報表基礎）</li>
+<li>主題六（怎麼看）</li>
+<li>主題七（自己的企業屬於什麼模式）</li>
+<li>主題八、九（成本與資產管理——這直接影響你的決策）</li>
+<li>主題十、十一（風險識別——保護企業）</li>
+</ol>
+<h3 id="如果你是投資者">如果你是投資者</h3>
+<p>建議按照以下順序閱讀：</p>
+<ol>
+<li>主題一（理解財報的重要性）</li>
+<li>主題三、四、五（理解報表呈現什麼）</li>
+<li>主題六（怎麼分析）</li>
+<li>主題十、十一（識別地雷股——這直接影響你的投資成敗）</li>
+<li>主題七（理解不同企業的獲利模式——幫助你評估合理價值）</li>
+</ol>
+<h3 id="如果你完全是零基礎">如果你完全是零基礎</h3>
+<p>建議按照書籍順序從主題一開始閱讀，每個主題都做到完全理解再往下走。沒有必要跳躍，因為每個主題都互相支撐。</p>
+<hr>
+<h2 id="結語-財報力的本質">結語：財報力的本質</h2>
+<p>郭榮芳課程的核心傳達，不是教你變成財務分析師，而是教你：</p>
+<p><strong>1. 看懂企業的真實面貌</strong></p>
+<p>不是被表面的增長、高 EPS 迷惑，而是能夠透過財務報表看出企業真實的獲利能力、現金狀況、風險水準。</p>
+<p><strong>2. 做出更聰明的決策</strong></p>
+<p>無論你是經營企業、管理部門、還是進行投資，有財報力就能做出基於事實而非猜測的決策。</p>
+<p><strong>3. 識別危機</strong></p>
+<p>在問題還沒爆炸時，就從報表中看出端倪，及早採取行動。很多企業的倒閉都不是突然，而是有跡可循的。</p>
+<p><strong>4. 理解商業的本質</strong></p>
+<p>企業為什麼賺錢，是因為什麼模式，需要什麼投資來維持，這些問題的答案都在財務報表裡。</p>
+<p>財報力就是這樣一種能力：<strong>用數字去理解世界，用邏輯去判斷未來，用事實去做決策</strong>。</p>
+<p>郭榮芳多次強調：「沒有數量化就不能管理。」反過來說，<strong>有了數量化（財報），你就掌握了管理和決策的基礎</strong>。</p>
+<p>希望通過這份知識庫，你能建立起自己的財報力。</p>
+<hr>
+<p><em>本知識庫根據郭榮芳會計師的 12 集課程完整整合，保留了所有案例、數字、方法論的完整性，未做任何刪減。</em></p>
+    </div>
+  </main>
+</div>
+
+<script>
+  const mainEl = document.getElementById('main');
+  const navLinks = document.querySelectorAll('#nav-list a');
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  const progressBar = document.getElementById('progress-bar');
+  const contentEl = document.getElementById('content');
+
+  // ── Navigation: goToSection ──────────────────────────────
+  function goToSection(slug) {
+    const target = document.getElementById(slug);
+    if (!target) return;
+    const containerRect = mainEl.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const offset = targetRect.top - containerRect.top + mainEl.scrollTop - 32;
+    mainEl.scrollTo({ top: offset, behavior: 'smooth' });
+    // update active
+    navLinks.forEach(a => a.classList.remove('active'));
+    const activeLink = document.querySelector(`#nav-list a[href="#${slug}"]`);
+    if (activeLink) activeLink.classList.add('active');
+  }
+
+  // Intercept all # links in content
+  contentEl.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    e.preventDefault();
+    const slug = a.getAttribute('href').slice(1);
+    goToSection(slug);
+  });
+
+  // ── Scroll spy ───────────────────────────────────────────
+  const allHeadings = Array.from(contentEl.querySelectorAll('h1[id],h2[id],h3[id]'));
+
+  mainEl.addEventListener('scroll', () => {
+    // progress bar
+    const pct = mainEl.scrollTop / (mainEl.scrollHeight - mainEl.clientHeight);
+    progressBar.style.transform = `scaleX(${pct})`;
+
+    // active nav
+    const scrollTop = mainEl.scrollTop + 60;
+    let current = null;
+    for (const h of allHeadings) {
+      if (h.offsetTop <= scrollTop) current = h;
+    }
+    if (current) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      const id = current.getAttribute('id');
+      const match = document.querySelector(`#nav-list a[href="#${id}"]`);
+      if (match) {
+        match.classList.add('active');
+        // scroll nav to keep active visible
+        const navScroll = match.closest('.nav-scroll');
+        const matchTop = match.offsetTop;
+        const navH = navScroll.clientHeight;
+        const navST = navScroll.scrollTop;
+        if (matchTop < navST + 40 || matchTop > navST + navH - 40) {
+          navScroll.scrollTo({ top: matchTop - navH / 2, behavior: 'smooth' });
+        }
+      }
+    }
+  });
+
+  // ── Search ───────────────────────────────────────────────
+  // Build search index from headings + paragraphs
+  const searchIndex = [];
+  allHeadings.forEach(h => {
+    const section = h;
+    const txt = h.textContent;
+    let preview = '';
+    let sib = h.nextElementSibling;
+    while (sib && !['H1','H2','H3'].includes(sib.tagName)) {
+      if (sib.tagName === 'P') { preview = sib.textContent.slice(0, 80); break; }
+      sib = sib.nextElementSibling;
+    }
+    searchIndex.push({ id: h.id, title: txt, preview, el: section });
+  });
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim();
+    if (!q) { searchResults.style.display = 'none'; clearHighlights(); return; }
+    
+    const matches = searchIndex.filter(item =>
+      item.title.includes(q) || item.preview.includes(q)
+    );
+    
+    // Full text search too
+    const allText = Array.from(contentEl.querySelectorAll('p, li, blockquote'));
+    const textMatches = new Set();
+    allText.forEach(el => {
+      if (el.textContent.includes(q)) {
+        // find nearest heading
+        let prev = el.previousElementSibling;
+        while (prev && !['H1','H2','H3'].includes(prev.tagName)) prev = prev.previousElementSibling;
+        if (prev && prev.id) textMatches.add(prev.id);
+      }
+    });
+    
+    const allMatchIds = new Set([...matches.map(m => m.id), ...textMatches]);
+    const finalMatches = searchIndex.filter(m => allMatchIds.has(m.id));
+
+    if (!finalMatches.length) {
+      searchResults.innerHTML = '<div class="search-no-result">沒有找到相關結果</div>';
+      searchResults.style.display = 'block';
+      return;
+    }
+
+    searchResults.innerHTML = finalMatches.slice(0,12).map(item => `
+      <div class="search-result-item" onclick="goToSection('${item.id}'); searchResults.style.display='none'; searchInput.value='';">
+        <div class="result-title">${item.title}</div>
+        <div class="result-preview">${item.preview}</div>
+      </div>
+    `).join('');
+    searchResults.style.display = 'block';
+    highlightText(q);
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-wrap')) {
+      searchResults.style.display = 'none';
+    }
+  });
+
+  // Highlight
+  function highlightText(q) {
+    clearHighlights();
+    if (!q) return;
+    const walker = document.createTreeWalker(contentEl, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node => {
+      if (!node.textContent.includes(q)) return;
+      const parent = node.parentNode;
+      if (['SCRIPT','STYLE'].includes(parent.tagName)) return;
+      const parts = node.textContent.split(q);
+      const frag = document.createDocumentFragment();
+      parts.forEach((part, i) => {
+        frag.appendChild(document.createTextNode(part));
+        if (i < parts.length - 1) {
+          const mark = document.createElement('mark');
+          mark.textContent = q;
+          frag.appendChild(mark);
+        }
+      });
+      parent.replaceChild(frag, node);
+    });
+  }
+
+  function clearHighlights() {
+    contentEl.querySelectorAll('mark').forEach(m => {
+      m.replaceWith(document.createTextNode(m.textContent));
+    });
+  }
+
+  // Keyboard shortcut: / to focus search
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && e.target !== searchInput) {
+      e.preventDefault();
+      searchInput.focus();
+    }
+    if (e.key === 'Escape') {
+      searchResults.style.display = 'none';
+      searchInput.blur();
+    }
+  });
+
+  // ── Hamburger / Mobile sidebar ───────────────────────────
+  const hamburger = document.getElementById('hamburger');
+  const sidebarEl = document.querySelector('.sidebar');
+  const overlayEl = document.getElementById('overlay');
+
+  function openSidebar() {
+    sidebarEl.classList.add('open');
+    overlayEl.classList.add('open');
+    hamburger.classList.add('open');
+  }
+  function closeSidebar() {
+    sidebarEl.classList.remove('open');
+    overlayEl.classList.remove('open');
+    hamburger.classList.remove('open');
+  }
+  hamburger.addEventListener('click', () => {
+    sidebarEl.classList.contains('open') ? closeSidebar() : openSidebar();
+  });
+  overlayEl.addEventListener('click', closeSidebar);
+
+  // Close sidebar after nav click on mobile
+  navLinks.forEach(a => {
+    a.addEventListener('click', () => {
+      if (window.innerWidth <= 768) closeSidebar();
+    });
+  });
+
+</script>
+
+</body>
+</html>

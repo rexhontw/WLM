@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Steven Bartlett 知識庫</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&family=Space+Mono&display=swap');
+
+  :root {
+    --accent: #7c3a1e;
+    --bg: #fdfcfa;
+    --sidebar-w: 280px;
+    --text: #1a1a1a;
+    --muted: #666;
+    --border: #e0ddd8;
+    --code-bg: #f4f1ec;
+    --blockquote-bg: #f9f7f4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  /* Layout */
+  .layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    height: 100vh;
+    background: #faf9f7;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .sidebar-header {
+    padding: 28px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .sidebar-header .label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .sidebar-header h2 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.4;
+    margin: 0;
+  }
+  
+  .sidebar-header .author {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+  }
+
+  /* Search */
+  .search-wrap {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .search-wrap input {
+    width: 100%;
+    padding: 8px 12px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'Noto Sans TC', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-wrap input:focus {
+    border-color: var(--accent);
+  }
+
+  .search-wrap input::placeholder { color: #bbb; }
+
+  /* Nav */
+  .nav-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 0 20px;
+  }
+
+  .nav-scroll::-webkit-scrollbar { width: 4px; }
+  .nav-scroll::-webkit-scrollbar-track { background: transparent; }
+  .nav-scroll::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+
+  .nav-scroll ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .nav-scroll li a {
+    display: block;
+    padding: 7px 20px;
+    font-size: 12.5px;
+    color: var(--muted);
+    text-decoration: none;
+    line-height: 1.4;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-scroll li a:hover {
+    color: var(--text);
+    background: rgba(0,0,0,0.03);
+    border-left-color: var(--accent);
+  }
+
+  .nav-scroll li a.active {
+    color: var(--accent);
+    font-weight: 500;
+    border-left-color: var(--accent);
+    background: rgba(0,0,0,0.02);
+  }
+
+  .nav-h1 > a {
+    font-weight: 600 !important;
+    font-size: 11.5px !important;
+    letter-spacing: 0.3px;
+    color: #444 !important;
+    background: #f2efe9 !important;
+    border-left: none !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    margin-top: 4px;
+    text-transform: none;
+  }
+
+  /* Main content */
+  #main {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    padding: 0;
+  }
+
+  #main::-webkit-scrollbar { width: 6px; }
+  #main::-webkit-scrollbar-track { background: transparent; }
+  #main::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+  .content-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 56px 56px 100px;
+  }
+
+  /* Typography */
+  .content-inner h1 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 60px 0 12px;
+    color: var(--text);
+    padding-top: 20px;
+  }
+
+  .content-inner h1:first-child {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .content-inner h2 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 52px 0 16px;
+    color: var(--text);
+    padding-top: 16px;
+    border-top: 2px solid var(--accent);
+    padding-bottom: 8px;
+  }
+
+  .content-inner h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 32px 0 12px;
+    color: var(--text);
+  }
+
+  .content-inner h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 24px 0 8px;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .content-inner p {
+    font-size: 15px;
+    line-height: 1.85;
+    margin: 0 0 16px;
+    color: #2a2a2a;
+  }
+
+  .content-inner ul, .content-inner ol {
+    margin: 0 0 16px 20px;
+  }
+
+  .content-inner li {
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 4px;
+    color: #2a2a2a;
+  }
+
+  .content-inner blockquote {
+    background: var(--blockquote-bg);
+    border-left: 3px solid var(--accent);
+    padding: 14px 20px;
+    margin: 20px 0;
+    font-size: 14.5px;
+    color: #444;
+    line-height: 1.75;
+    font-style: italic;
+  }
+
+  .content-inner code {
+    font-family: 'Space Mono', monospace;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  .content-inner hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  .content-inner strong {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .content-inner a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .content-inner a:hover {
+    text-decoration: underline;
+  }
+
+  /* Table */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 20px 0;
+  }
+
+  .content-inner table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  .content-inner th {
+    background: var(--accent);
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 500;
+  }
+
+  .content-inner td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .content-inner tr:hover td {
+    background: #f9f7f4;
+  }
+
+  /* Search highlight */
+  mark {
+    background: #fef08a;
+    color: inherit;
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  /* Search results overlay */
+  #search-results {
+    display: none;
+    position: absolute;
+    top: calc(28px + 16px + 55px + 53px);
+    left: 0;
+    width: var(--sidebar-w);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    max-height: 340px;
+    overflow-y: auto;
+    z-index: 100;
+  }
+
+  .search-result-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0ede8;
+    transition: background 0.15s;
+  }
+
+  .search-result-item:hover {
+    background: #f4f1ec;
+  }
+
+  .search-result-item .result-title {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .search-result-item .result-preview {
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .search-no-result {
+    padding: 16px;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  /* Progress bar */
+  #progress-bar {
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-w);
+    right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 0.1s;
+    z-index: 50;
+    opacity: 0.7;
+  }
+
+  /* ── RWD ─────────────────────────────────────── */
+  .hamburger {
+    display: none;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 200;
+    width: 40px;
+    height: 40px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    transition: background 0.2s;
+  }
+  .hamburger span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    transition: transform 0.25s, opacity 0.2s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 149;
+  }
+
+  @media (max-width: 768px) {
+    .hamburger { display: flex; }
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      z-index: 150;
+      transform: translateX(-100%);
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: none;
+    }
+    .sidebar.open {
+      transform: translateX(0);
+      box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+    }
+    .sidebar-overlay.open {
+      display: block;
+    }
+    #main {
+      width: 100%;
+    }
+    #progress-bar {
+      left: 0;
+    }
+    .content-inner {
+      padding: 64px 20px 80px;
+    }
+    .content-inner h1 { font-size: 22px; }
+    .content-inner h2 { font-size: 17px; }
+  }
+
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+
+<button class="hamburger" id="hamburger" aria-label="選單">
+  <span></span><span></span><span></span>
+</button>
+<div class="sidebar-overlay" id="overlay"></div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="label">知識庫</div>
+      <h2>Steven Bartlett 知識庫</h2>
+      <div class="author">Steven Bartlett</div>
+    </div>
+    <div class="search-wrap" style="position:relative">
+      <input type="text" id="search-input" placeholder="搜尋關鍵字…" autocomplete="off">
+      <div id="search-results"></div>
+    </div>
+    <div class="nav-scroll">
+      <ul id="nav-list">
+        <li class="nav-h2"><a href="#導讀" onclick="goToSection('導讀'); return false;">導讀</a></li>
+<li class="nav-h1"><a href="#I--心智基礎-自我認知與信念系統" onclick="goToSection('I--心智基礎-自我認知與信念系統'); return false;">I. 心智基礎：自我認知與信念系統</a></li>
+<li class="nav-h2"><a href="#1--五桶理論-人生的優先級架構" onclick="goToSection('1--五桶理論-人生的優先級架構'); return false;">1. 五桶理論：人生的優先級架構</a></li>
+<li class="nav-h2"><a href="#2--信念架構-你不能選擇你相信什麼" onclick="goToSection('2--信念架構-你不能選擇你相信什麼'); return false;">2. 信念架構：你不能選擇你相信什麼</a></li>
+<li class="nav-h2"><a href="#3--自我敘事-永遠不要妥協你對自己的故事" onclick="goToSection('3--自我敘事-永遠不要妥協你對自己的故事'); return false;">3. 自我敘事：永遠不要妥協你對自己的故事</a></li>
+<li class="nav-h2"><a href="#4--行為基因-接納你的古怪-把它變成資產" onclick="goToSection('4--行為基因-接納你的古怪-把它變成資產'); return false;">4. 行為基因：接納你的古怪，把它變成資產</a></li>
+<li class="nav-h2"><a href="#5--教學作為掌握-把想要學的東西教給別人" onclick="goToSection('5--教學作為掌握-把想要學的東西教給別人'); return false;">5. 教學作為掌握：把想要學的東西教給別人</a></li>
+<li class="nav-h2"><a href="#6--心理基礎優先-為什麼你的內在狀態決定一切" onclick="goToSection('6--心理基礎優先-為什麼你的內在狀態決定一切'); return false;">6. 心理基礎優先：為什麼你的內在狀態決定一切</a></li>
+<li class="nav-h1"><a href="#II--敘事與表現-如何被世界理解" onclick="goToSection('II--敘事與表現-如何被世界理解'); return false;">II. 敘事與表現：如何被世界理解</a></li>
+<li class="nav-h2"><a href="#7--敘事的力量-故事比事實更重要" onclick="goToSection('7--敘事的力量-故事比事實更重要'); return false;">7. 敘事的力量：故事比事實更重要</a></li>
+<li class="nav-h2"><a href="#8--差異化-做別人不做的-而不是做別人做的更好" onclick="goToSection('8--差異化-做別人不做的-而不是做別人做的更好'); return false;">8. 差異化：做別人不做的，而不是做別人做的更好</a></li>
+<li class="nav-h2"><a href="#9--第一印象與時間稀缺性-爭奪注意力的經濟學" onclick="goToSection('9--第一印象與時間稀缺性-爭奪注意力的經濟學'); return false;">9. 第一印象與時間稀缺性：爭奪注意力的經濟學</a></li>
+<li class="nav-h2"><a href="#10---無用的荒謬性-會比-有用的實際性-更定義你" onclick="goToSection('10---無用的荒謬性-會比-有用的實際性-更定義你'); return false;">10. 「無用的荒謬性」會比「有用的實際性」更定義你</a></li>
+<li class="nav-h2"><a href="#11--框架問題-視角如何重塑現實" onclick="goToSection('11--框架問題-視角如何重塑現實'); return false;">11. 框架問題：視角如何重塑現實</a></li>
+<li class="nav-h2"><a href="#12--被冒犯的人會記住你" onclick="goToSection('12--被冒犯的人會記住你'); return false;">12. 被冒犯的人會記住你</a></li>
+<li class="nav-h1"><a href="#III--決策與行動-實踐哲學" onclick="goToSection('III--決策與行動-實踐哲學'); return false;">III. 決策與行動：實踐哲學</a></li>
+<li class="nav-h2"><a href="#13--計劃-A-思維-停止準備-開始行動" onclick="goToSection('13--計劃-A-思維-停止準備-開始行動'); return false;">13. 計劃 A 思維：停止準備，開始行動</a></li>
+<li class="nav-h2"><a href="#14--小失誤現在-大失誤後來" onclick="goToSection('14--小失誤現在-大失誤後來'); return false;">14. 小失誤現在，大失誤後來</a></li>
+<li class="nav-h2"><a href="#15--失敗生態-如何比競爭對手失敗得更多" onclick="goToSection('15--失敗生態-如何比競爭對手失敗得更多'); return false;">15. 失敗生態：如何比競爭對手失敗得更多</a></li>
+<li class="nav-h2"><a href="#16--壓力的再框架化-特權而不是負擔" onclick="goToSection('16--壓力的再框架化-特權而不是負擔'); return false;">16. 壓力的再框架化：特權而不是負擔</a></li>
+<li class="nav-h2"><a href="#17--技能是無價值的-背景是有價值的" onclick="goToSection('17--技能是無價值的-背景是有價值的'); return false;">17. 技能是無價值的，背景是有價值的</a></li>
+<li class="nav-h2"><a href="#18--紀律的公式-死亡-時間和紀律" onclick="goToSection('18--紀律的公式-死亡-時間和紀律'); return false;">18. 紀律的公式：死亡、時間和紀律</a></li>
+<li class="nav-h1"><a href="#IV--團隊與組織-集體行動" onclick="goToSection('IV--團隊與組織-集體行動'); return false;">IV. 團隊與組織：集體行動</a></li>
+<li class="nav-h2"><a href="#19---誰-比-怎樣-更重要" onclick="goToSection('19---誰-比-怎樣-更重要'); return false;">19. 「誰」比「怎樣」更重要</a></li>
+<li class="nav-h2"><a href="#20--文化是誰被容納-誰被排斥" onclick="goToSection('20--文化是誰被容納-誰被排斥'); return false;">20. 文化是誰被容納，誰被排斥</a></li>
+<li class="nav-h2"><a href="#21--進展的力量-為什麼小贏很重要" onclick="goToSection('21--進展的力量-為什麼小贏很重要'); return false;">21. 進展的力量：為什麼小贏很重要</a></li>
+<li class="nav-h2"><a href="#22--傳達願景-不是恐懼" onclick="goToSection('22--傳達願景-不是恐懼'); return false;">22. 傳達願景，不是恐懼</a></li>
+<li class="nav-h2"><a href="#23--邪教心態的力量與危險" onclick="goToSection('23--邪教心態的力量與危險'); return false;">23. 邪教心態的力量與危險</a></li>
+<li class="nav-h1"><a href="#V--整合與應用" onclick="goToSection('V--整合與應用'); return false;">V. 整合與應用</a></li>
+<li class="nav-h2"><a href="#Steven-的核心方法論框架" onclick="goToSection('Steven-的核心方法論框架'); return false;">Steven 的核心方法論框架</a></li>
+<li class="nav-h2"><a href="#核心主題之間的交叉引用地圖" onclick="goToSection('核心主題之間的交叉引用地圖'); return false;">核心主題之間的交叉引用地圖</a></li>
+<li class="nav-h2"><a href="#關鍵案例與具體例子" onclick="goToSection('關鍵案例與具體例子'); return false;">關鍵案例與具體例子</a></li>
+<li class="nav-h2"><a href="#實踐應用清單-如何開始應用這些法則" onclick="goToSection('實踐應用清單-如何開始應用這些法則'); return false;">實踐應用清單：如何開始應用這些法則</a></li>
+<li class="nav-h2"><a href="#結論-為什麼這個知識庫對零基礎學習者很重要" onclick="goToSection('結論-為什麼這個知識庫對零基礎學習者很重要'); return false;">結論：為什麼這個知識庫對零基礎學習者很重要</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div class="content-inner" id="content">
+      <h1 id="CEO_Steven_Bartlett-知識庫">CEO_Steven_Bartlett 知識庫</h1>
+<p><strong>來源</strong>：《The Diary of a CEO: The 33 Laws of Business and Life》by Steven Bartlett  </p>
+<p><strong>知識性質</strong>：B 型（作者視角框架為核心）+ A 型（可驗證的實踐方法）  </p>
+<p><strong>適用場景</strong>：零基礎完全學習 —— 無須任何商業背景，從基礎概念開始理解 Steven Bartlett 的完整思想體系</p>
+<hr>
+<h2 id="導讀">導讀</h2>
+<p>Steven Bartlett 是一位英國連續創業家與投資人。這本書並非傳統的商業管理教科書，而是他從親身實踐中提煉的 33 條「法則」，涵蓋個人心智、敘事能力、決策哲學與團隊建設。他的核心立場是：<strong>商業成功的本質不在於工具或技巧，而在於你如何認知自己、如何被他人認知、以及你做決策時的底層邏輯</strong>。</p>
+<p>這份知識庫的結構不遵循原書的 4 柱劃分，而是以主題的內在關聯重新組織，讓知識本身的結構浮現。你會看到 Steven 的思想如何在「自我認知 → 敘事表達 → 決策行動 → 團隊協作」的環節中循環與深化。</p>
+<hr>
+<h1 id="I--心智基礎-自我認知與信念系統">I. 心智基礎：自我認知與信念系統</h1>
+<h2 id="1--五桶理論-人生的優先級架構">1. 五桶理論：人生的優先級架構</h2>
+<p>Steven 提出的「五桶」模型是理解他整個人生哲學的基礎。</p>
+<p><strong>五桶分別是什麼</strong>  </p>
+<p>這五個桶代表人生的五個主要領域，它們按重要性順序排列。你的目標不是把每個桶都裝滿，而是按正確的順序填滿。Steven 沒有在書中明確列出這五個桶的名稱（這是他有意留下的開放性），但從他的論述可以推斷，它們涉及：個人心智健康、家庭與親密關係、個人品牌與敘事、專業成就、以及對社會的貢獻。</p>
+<p><strong>為什麼順序很關鍵</strong>  </p>
+<p>很多人的失敗不是因為努力不夠，而是因為填桶的順序錯了。比如一個人可能先追求金錢和名望，最後發現當金錢到位時，他的家庭關係已經破裂、心理狀態也崩潰了。逆序去填桶是一種常見的人生陷阱。</p>
+<p>Steven 的立場是激進的：你必須先穩定你的心理基礎（第一桶），然後才能有效地建構敘事和追求成就。這是為什麼他會說「心智衛生」是一切的前提——不是因為它聽起來溫暖人心，而是因為它在因果上是必要的。</p>
+<p><strong>如何判斷你的桶的順序對不對</strong>  </p>
+<p>一個簡單的測試：如果你失去你最重要的成就（金錢、名望、職位），你還剩下什麼？還剩下的才是你真正按優先級填滿的桶。如果答案是「什麼都不剩」，那表示你填桶的順序完全反了。</p>
+<hr>
+<h2 id="2--信念架構-你不能選擇你相信什麼">2. 信念架構：你不能選擇你相信什麼</h2>
+<p>這是一條反直覺的論述，Steven 在這裡挑戰了「正面思維」的流行觀念。</p>
+<p><strong>信念不是選擇，而是結果</strong>  </p>
+<p>很多人被教導要「選擇相信」更好的事物。Steven 認為這在神經生物學上是不可能的。你的信念是你的經驗、觀察、社交環境的積累結果。你不能通過意志力去相信某件事——你的大腦會根據證據自動形成信念。</p>
+<p>這有兩個重要的推論：</p>
+<p>第一，如果你想改變你的信念，你需要改變你的環境、經歷或信息輸入。舉例：如果你相信「我不聰明」，這個信念通常來自於你在學校或工作中反複經歷的失敗或批評。改變這個信念的唯一方法，是創造新的經驗讓你的大腦看到相反的證據。簡單地告訴自己「我其實很聰明」是無效的——你的大腦會拒絕這個不符合證據的主張。</p>
+<p>第二，如果你想說服別人相信某件事，你不能只是用邏輯論證。你需要改變他們的環境或給他們新的經驗。這是為什麼 Steven 會說「從不試圖改變人的信念，而是創造新的背景讓他們自己改變」。</p>
+<p><strong>信念與身份的連結</strong>  </p>
+<p>Steven 強調，信念緊密地綁定於身份認同。你對自己身份的認知（「我是誰」）決定了你什麼信念是可接受的。如果你認為自己是「藝術家」，你會相信風險是值得冒的；如果你認為自己是「保守的人」，同樣的風險在你眼中就會顯得魯莽。</p>
+<p>改變身份認同比改變單個信念要深刻得多。所以在實踐中，Steven 的建議是：不要試著說服一個人改變他的信念。改變他對自己身份的認知——其他信念會自動調整。</p>
+<hr>
+<h2 id="3--自我敘事-永遠不要妥協你對自己的故事">3. 自我敘事：永遠不要妥協你對自己的故事</h2>
+<p>Steven 引入了「自我敘事」(self-story) 的概念，這是他整個思想體系中最核心的概念之一。</p>
+<p><strong>什麼是自我敘事</strong>  </p>
+<p>自我敘事是你對自己是誰、你從哪裡來、你要往哪裡去的連貫故事。不是你希望別人相信的故事，也不是社會期待你相信的故事——而是你真正相信的、你真實的自我理解。</p>
+<p>Steven 認為，這個故事比你的技能、教育或資源都更重要。一個人可以有平凡的背景、有限的教育、缺乏人脈，但如果他對自己的故事有清晰而堅定的認知，他仍然能做出非凡的事。反過來說，一個擁有所有優勢的人，如果他的自我敘事含混不清或自相矛盾，他會浪費掉所有的優勢。</p>
+<p><strong>自我敘事的三個成分</strong>  </p>
+<ol>
+<li><strong>你的起點</strong>：你真實來自什麼樣的背景？不是為了獲得同情或優越感，而是真實地承認你從哪裡開始。Steven 本人的故事是「一個平凡英國北方小鎮的普通男孩，在學校失敗，被告知沒有潛力」。他沒有把這個包裝成「逆境英雄」的陳詞濫調，而是用它來定義他的獨特性：他已經跌到底部了，所以他有什麼失去的呢？</li>
+</ol>
+<ol>
+<li><strong>你的核心信念</strong>：你相信什麼是值得的？在所有選擇面前，你的北極星是什麼？對 Steven 來說，這是「改變人的想法的能力」——無論做什麼，他都圍繞著這個核心信念。</li>
+</ol>
+<ol>
+<li><strong>你的目標軌跡</strong>：你想往哪裡去？這不必是一個確切的終點，但要有清晰的方向。就像航海者不必知道確切的目的地，但必須知道他要向北還是向東。</li>
+</ol>
+<p><strong>為什麼妥協自我敘事是致命的</strong>  </p>
+<p>Steven 說，很多人為了適應社會期待、為了被接受、為了賺取某個他人的認可，會逐漸改變他們的自我敘事。你可能原本相信「創意和自由很重要」，但為了進入一個高薪工作，你開始告訴自己「穩定才是真正的成功」。每一次小的妥協，你都在削弱你真實的自我。</p>
+<p>這不是說你的故事是固定的——它會隨著經驗而演變。但演變應該來自於你的真實反思，而不是來自於外部壓力。</p>
+<p><strong>重塑自我敘事的實踐</strong>  </p>
+<p>如果你現在的自我敘事已經被妥協了，Steven 的建議是通過深度反思和決定性的行動來重塑。這通常需要一個危機或轉折點——有時你必須允許舊的故事完全破裂，才能建立一個新的、更真實的故事。他在書中多次提到自己的關鍵轉折，都不是漸進的改變，而是激進的破裂與重建。</p>
+<hr>
+<h2 id="4--行為基因-接納你的古怪-把它變成資產">4. 行為基因：接納你的古怪，把它變成資產</h2>
+<p>Steven 提出一個有趣的觀點：每個人都有某些「古怪的」或「非傳統的」傾向——這些是你神經生物學的一部分，本質上是不可改變的。</p>
+<p><strong>古怪不是缺陷，是信號</strong>  </p>
+<p>學校系統、公司文化，常常會試圖「修正」那些不符合標準的人。如果你過度活躍，他們給你藥物；如果你喜歡獨處，他們說你不是團隊成員；如果你經常質疑，他們說你很難相處。</p>
+<p>Steven 的立場是：這些古怪的特徵往往隱含著你的獨特能力。他的例子是他自己——他一生都被描述為「難以集中注意力」、「愛打斷人」、「太有想法了」。在傳統教室裡，這些都是缺點。但在創業環境中，這些特性（快速的想法切換、多線程思維、敢於質疑）變成了他的超級力量。</p>
+<p><strong>不要試圖「修正」，要試圖「重定向」</strong>  </p>
+<p>Steven 不建議你去改變你的基本傾向。相反，他建議你理解這些傾向，然後找到一個環境或角色，讓這些傾向變成資產而不是負債。</p>
+<p>舉例：如果你有強烈的完美主義傾向，在一個快速迭代、容錯的創業環境中這會很痛苦。但在品質控制、核心產品開發、或標準制定的角色中，這會變成超級力量。</p>
+<p>如果你有強烈的社交渴望，在一個需要深度專注的研究工作中你會感到窒息。但在領導、銷售、社區建設的角色中，你會閃閃發光。</p>
+<p><strong>自我認知的實踐</strong>  </p>
+<p>Steven 建議進行一個簡單的練習：列出 5-10 個你一生都在努力改變或隱藏的特質。對於每一個，問自己：在什麼環境或角色中，這個特質會變成優勢？這個練習通常會揭示你一直在尋找什麼樣的生活。</p>
+<hr>
+<h2 id="5--教學作為掌握-把想要學的東西教給別人">5. 教學作為掌握：把想要學的東西教給別人</h2>
+<p>這條原則聽起來很簡單，但 Steven 賦予它深層的神經科學和哲學解釋。</p>
+<p><strong>教學強制深度理解</strong>  </p>
+<p>當你決定要教某樣東西時，你不能只是表面理解。你必須理解到能清楚地解釋給一個初學者、能預見他們的困惑點、能用多個比喻和例子來呈現。這個過程會迫使你暴露你理解中的漏洞。</p>
+<p>Steven 用他自己的例子：他想深入理解心理學、商業、人類行為。他的方法不是閱讀更多的書（很多人的習慣），而是開始一個播客（《The Diary of a CEO》），每週邀請專家和有趣的人對話。通過不斷地向嘉賓提問、與觀眾分享想法，他被迫達到了一種深度理解，是單純閱讀永遠無法達到的。</p>
+<p><strong>責任感創造動力</strong>  </p>
+<p>當你對別人有教學的義務時，你會更認真。不是為了看起來好，而是因為你知道有人依靠你的知識。這個責任感會激勵你做得更好。</p>
+<p>在實踐中，Steven 建議：如果你想掌握某樣技能或知識，不要只是消費內容。主動找到方式去教它——寫文章、做視頻、給朋友講解、組織讀書會。這會加速你的掌握。</p>
+<hr>
+<h2 id="6--心理基礎優先-為什麼你的內在狀態決定一切">6. 心理基礎優先：為什麼你的內在狀態決定一切</h2>
+<p>Steven 將第一桶確定為「心理基礎」，並在書的多個地方強調這一點。</p>
+<p><strong>心理衛生不是奢侈品，是基礎設施</strong>  </p>
+<p>在競爭激烈的環境中，很容易把心理健康當作是可以稍後解決的「自我照顧」問題。Steven 的立場不同：你的心理狀態是決定你在所有其他領域成功的基礎設施。</p>
+<p>一個極度焦慮的人，無論多聰明，也無法做出好決策。一個抑鬱的人無法發揮他的創意。一個被羞愧感驅動的人會在自我破壞的道路上奔跑。</p>
+<p><strong>什麼構成「心理基礎」</strong>  </p>
+<p>根據 Steven 的論述，這包括：對自己的接納、對他人的信任能力、處理失敗和拒絕的韌性、以及對生活目的的某種感悟。</p>
+<p>這些不是通過積極思維或冥想就能獲得的（儘管這些可能有幫助）。它們通常需要深度的自我反思、有時需要專業的心理幫助、以及時間。Steven 在書中多次提到他自己的心理治療經歷，並對此非常坦率。</p>
+<p><strong>心理基礎與決策的連結</strong>  </p>
+<p>這是一個重要的推論：如果你的心理基礎不穩固，你做決策時會被潛意識的驅動力（逃避、尋求驗證、證明自己）所操控。你可能會追求一個你根本不想要的成功，因為你試圖證明什麼。你可能會頻繁改變方向，因為你缺乏內在的穩定性。你可能會選擇安全而不是意義。</p>
+<p>反過來說，當你的心理基礎穩固時，你的決策會來自於清晰的價值觀而不是恐懼。你可以承受失敗而不失去自我。你可以拒絕機會而不感到內疚。</p>
+<hr>
+<h1 id="II--敘事與表現-如何被世界理解">II. 敘事與表現：如何被世界理解</h1>
+<h2 id="7--敘事的力量-故事比事實更重要">7. 敘事的力量：故事比事實更重要</h2>
+<p>這是 Steven 書中最強有力、也最具爭議性的主張之一。</p>
+<p><strong>為什麼故事比事實重要</strong>  </p>
+<p>人的大腦不是按邏輯運作的。它按故事運作。當你聽到一個事實時，它會被快速遺忘；當你聽到一個故事時，它會被記住、被傳播、會改變你的信念。</p>
+<p>Steven 用很多例子說明這一點。比如，告訴人們「貧困是一個複雜的社會問題」會毫無效果。但告訴人們一個特定個體從貧困中走出來的故事，會立刻激發同情和行動。</p>
+<p>在商業中，一個創始人的成功不是由數字決定的，而是由他能講出什麼樣的故事決定的。Apple 不是因為製造最好的電腦而成功——他們是因為 Steve Jobs 講出了一個關於「打破規則的不同尋常的人」的故事。</p>
+<p><strong>故事的三個成分</strong>  </p>
+<p>Steven 指出，一個有力的故事需要：</p>
+<ol>
+<li><strong>主角</strong>：通常應該是聽眾能識別的某個人</li>
+<li><strong>衝突</strong>：必須有真實的風險或困難</li>
+<li><strong>轉折</strong>：必須有一個改變或啟示</li>
+</ol>
+<p>沒有衝突的故事不是故事，只是信息。沒有清晰的主角的故事是抽象的。沒有真實轉折的故事只是敘述。</p>
+<p><strong>為什麼你的個人品牌是一個故事</strong>  </p>
+<p>Steven 認為，每個人，無論是創業家、員工還是尋求影響力的人，都有一個「個人品牌故事」。這不是一件好事還是壞事的問題——這只是一個事實。人們關於你的故事已經存在了。</p>
+<p>問題是：這個故事是由誰定義的？如果是由你定義，那麼它可能是真實、有力、並為你服務的。如果它是由別人或偶然的環境定義，那麼它可能會傷害你。</p>
+<p><strong>主動建構你的故事</strong>  </p>
+<p>Steven 的建議是不要被動地讓你的故事被定義。主動地、有意地、基於你的真實自我和現實，去建構和講述你的故事。</p>
+<p>這不是關於自欺欺人或扭曲事實。而是關於在大量的真實事實中，選擇哪些作為你故事的關鍵情節。比如，你可能有過失敗的創業、也有成功的創業。你可以講失敗的故事（「我學到了很多」）或成功的故事（「我創建了有意義的東西」）。兩個都是真實的，但它們講述了關於你是誰的不同故事。</p>
+<hr>
+<h2 id="8--差異化-做別人不做的-而不是做別人做的更好">8. 差異化：做別人不做的，而不是做別人做的更好</h2>
+<p>Steven 對「成為最好的」這個概念提出了尖銳的批評。</p>
+<p><strong>最好的陷阱</strong>  </p>
+<p>有一個巨大的市場期待每個人都努力成為「最好的」——最聰明的、最努力的、最成功的。這推動了文化中大量的競爭和焦慮。</p>
+<p>但 Steven 指出，在大多數領域，已經有人是最好的。或者，成為最好需要的努力是指數級的——後 1% 的進步需要的努力是前 50% 的一千倍。</p>
+<p>所以，如果你進入一個已經有頂級競爭者的領域，並試圖通過「做得更好」來超越他們，你通常會失敗。</p>
+<p><strong>差異化是替代品</strong>  </p>
+<p>相反，Steven 建議尋求差異化。這意味著做一些別人沒有做的事，而不是試著做別人做的事更好。</p>
+<p>他的例子：在聲音傳播和播客領域，已經有成熟的媒體公司。Steven 沒有試著做得「更好」——他創建了一種不同的格式和方式，這在當時是新穎的。</p>
+<p>在差異化的道路上，你是唯一的競爭者，因為沒有人在做同樣的事。</p>
+<p><strong>如何找到你的差異化空間</strong>  </p>
+<p>這通常來自於以下之一：</p>
+<ol>
+<li>你獨特的背景或視角給了你一個別人沒有的角度</li>
+<li>你的古怪特性或非傳統方法創造了別人沒有的方法</li>
+<li>你對現有解決方案的獨特理解讓你看到了市場空隙</li>
+<li>你願意做別人認為太冒險或太不尋常的事</li>
+</ol>
+<hr>
+<h2 id="9--第一印象與時間稀缺性-爭奪注意力的經濟學">9. 第一印象與時間稀缺性：爭奪注意力的經濟學</h2>
+<p>Steven 進入了一個關於現代注意力經濟的核心觀察。</p>
+<p><strong>人類的注意力是有限的資源</strong>  </p>
+<p>在一個信息過載的世界中，人們的注意力極其有限。任何人都會在第一個幾秒內決定他是否值得關注。</p>
+<p><strong>五秒規則</strong>  </p>
+<p>Steven 提出了「五秒規則」：你有五秒鐘來抓住某人的注意力。無論你在做什麼——一個演講、一個產品、一個內容片段——前五秒決定了一切。</p>
+<p>這並不是說內容不重要。而是說，如果你沒有在前五秒內贏得注意力，剩下的內容再好也不會被看到。</p>
+<p><strong>這如何改變你的敘事</strong>  </p>
+<p>這意味著你需要：</p>
+<ol>
+<li>立即呈現你的最強點，而不是埋藏在後面</li>
+<li>創造視覺或聽覺的「鉤子」來立刻吸引注意力</li>
+<li>避免「搭建舞台」或「解釋背景」——大多數人在你還在解釋的時候已經離開了</li>
+</ol>
+<p>Steven 用媒體的例子：最好的視頻不會從背景信息開始。它們從最有趣的片段開始，然後回過頭來解釋。</p>
+<p><strong>個人品牌中的五秒</strong>  </p>
+<p>當有人第一次遇到你時（在線或面對面），他們在前五秒決定他們是否有興趣進一步了解你。你的外表、你說話的方式、你立即傳達的能量——這些都在五秒內決定了一切。</p>
+<hr>
+<h2 id="10---無用的荒謬性-會比-有用的實際性-更定義你">10. 「無用的荒謬性」會比「有用的實際性」更定義你</h2>
+<p>這是一個令人困惑但深刻的觀念。</p>
+<p><strong>什麼是「無用的荒謬性」</strong>  </p>
+<p>Steven 指的是那些沒有實際目的、純粹是因為你喜歡或相信而做的事。比如：</p>
+<ul>
+<li>你講一個無關的笑話，因為你喜歡他人的笑聲</li>
+<li>你穿一件不實用但你喜歡的衣服</li>
+<li>你投入時間在一個你熱情的項目上，即使它永遠不會賺錢</li>
+<li>你表達一個冒險的或不尋常的觀點</li>
+</ul>
+<p><strong>為什麼這比實用的東西更重要</strong>  </p>
+<p>人們記住的不是你做的所有有用的、「應該做的」事。他們記住的是那些令他們驚訝、逗樂他們、或揭示你真實個性的時刻。</p>
+<p>這是為什麼 Steve Jobs 穿黑色高領衫而被記住，而不是因為他製造了計算機。為什麼 Elon Musk 的古怪推文給他增加了個人品牌，而不是他的工程專業知識。</p>
+<p>在商業和個人品牌中，「有用的實際性」是給定的。它是進入遊戲的門票。但「無用的荒謬性」——你真實的、古怪的、不完全合理的部分——才是讓你被記住和愛上的東西。</p>
+<p><strong>在實踐中應用這個</strong>  </p>
+<p>Steven 的建議是不要隱藏你的「無用」部分。不要試著看起來完全專業和有用。在你的專業性中表現出你的古怪。分享你瘋狂的想法。表現出你的熱情，即使它似乎不相關。</p>
+<p>這看起來很冒險，但實際上是降低風險的。因為當人們知道你是誰時，他們知道他們在和誰打交道。隱藏你真實自我的人，最終會失望他們的追隨者。</p>
+<hr>
+<h2 id="11--框架問題-視角如何重塑現實">11. 框架問題：視角如何重塑現實</h2>
+<p>Steven 引入了一個來自認知科學的強大概念。</p>
+<p><strong>同樣的現實，不同的框架</strong>  </p>
+<p>一個杯子半滿，也是半空。一個失敗是損失，也是學習。一個延遲是挫折，也是有時間考慮的機會。同樣的事實，不同的框架會改變它的含義。</p>
+<p><strong>框架決定情緒反應和行動</strong>  </p>
+<p>當一個人視自己為「受害者」時，他感到無力。當他視自己為「主角」時，他感到有能力。同樣的困難，在不同的框架中會產生不同的心理和行為反應。</p>
+<p><strong>誰控制框架，誰就控制故事</strong>  </p>
+<p>在商業談判中，誰先設定框架就佔據了優勢。在社會議題中，誰能控制敘事框架就能控制輿論。在個人發展中，誰能改變他們如何框架化困難，誰就能改變他們的人生軌跡。</p>
+<p><strong>框架重塑的實踐</strong>  </p>
+<p>Steven 建議，當面對一個困難時，有意地問自己：「我如何重新框架化這個？」</p>
+<p>比如，失業不是「我失敗了」而是「我現在有自由重新評估我的路徑」。健康危機不是「我生活中的災難」而是「我的身體告訴我一些重要的事」。被批評不是「人們不喜歡我」而是「我正在成為引人注目的東西，所以引起反應」。</p>
+<p>這不是自欺欺人。這是認識到現實是多元的，選擇一個能讓你更有能力、更清晰思考的框架。</p>
+<hr>
+<h2 id="12--被冒犯的人會記住你">12. 被冒犯的人會記住你</h2>
+<p>Steven 提出了一個具有營銷和個人品牌含義的觀察。</p>
+<p><strong>無聊是無處不在的安全選擇</strong>  </p>
+<p>說令人發指的話很安全。說每個人都同意的話是安全的。說無害的、被所有人接受的話是安全的。也是完全被遺忘的。</p>
+<p><strong>有爭議有時比有用更有價值</strong>  </p>
+<p>當你說冒犯人的話、不受歡迎的觀點、或挑戰假設時，你會激起反應。有些人會反對你。有些人會同意你。但所有人都會記住你。</p>
+<p>Steven 的例子很多。他談論他多次被批評或被取消的時刻——而這些時刻最終增強了他的品牌，而不是傷害它。</p>
+<p><strong>這不是關於為了注意力而冒犯</strong>  </p>
+<p>重要的是，這不是關於故意冒犯或尋求爭議。而是關於說你真正相信的話，即使你知道有些人會不同意或被冒犯。</p>
+<p>有完整性的不同意比沒有立場的一致意見更令人尊敬。</p>
+<p><strong>為什麼被冒犯的人反而成為品牌大使</strong>  </p>
+<p>有趣的是，被一個有強烈立場的人冒犯的人，往往會花更多時間談論這個人。「我完全不同意 X」引起的談話比「我有點喜歡 X」更多。</p>
+<p>所以，在個人品牌和影響力中，有清晰的立場——即使它冒犯人——往往比試圖讓每個人都開心更有效。</p>
+<hr>
+<h1 id="III--決策與行動-實踐哲學">III. 決策與行動：實踐哲學</h1>
+<h2 id="13--計劃-A-思維-停止準備-開始行動">13. 計劃 A 思維：停止準備，開始行動</h2>
+<p>Steven 對常見的「準備充分才開始」的建議提出了激進的批評。</p>
+<p><strong>計劃 B 是逃避的偽裝</strong>  </p>
+<p>很多人設有「計劃 B」——如果主要目標不工作，他們會做 X。Steven 認為計劃 B 是有害的，因為它允許你的大腦相信失敗是可以接受的。當事情變得困難時，你會自然地轉向計劃 B。</p>
+<p><strong>計劃 A 思維強制承諾</strong>  </p>
+<p>計劃 A 思維意味著沒有退路。沒有備用計畫。只有前進的一個方向。這聽起來很冒險，但 Steven 的論點是它實際上降低了風險，因為它迫使你：</p>
+<ol>
+<li>在開始前更仔細地思考（因為沒有後退的空間）</li>
+<li>在前進時更有創意地解決問題（因為 B 選項不存在）</li>
+<li>更深入地投入（因為這是唯一的選擇）</li>
+</ol>
+<p><strong>計劃 A 不是關於沒有靈活性</strong>  </p>
+<p>Steven 清楚地說明，計劃 A 思維不意味著剛性。你的戰術可以改變。你的方法可以改變。但你的基本目標和承諾不能改變。</p>
+<p>比如，一個創業家沒有計劃 B（不會放棄），但他會靈活改變產品、市場或業務模型。這與有計劃 B（「如果創業失敗，我會回到公司工作」）不同，因為那允許放棄。</p>
+<p><strong>計劃 A 如何改變決策品質</strong>  </p>
+<p>當你沒有逃離路線時，你會做不同的決策。你會尋求幫助而不是隱藏。你會更快地承認錯誤而不是試著掩蓋。你會採取更果斷的行動而不是拖延。</p>
+<hr>
+<h2 id="14--小失誤現在-大失誤後來">14. 小失誤現在，大失誤後來</h2>
+<p>Steven 介紹了一個簡單但強大的系統性思維框念。</p>
+<p><strong>邊際損失的累積</strong>  </p>
+<p>一個小的計算錯誤今天可能導致一個大的財務決策明天基於錯誤的假設。一個小的溝通失誤今天可能導致一個大的衝突明天，因為誤解堆積了。</p>
+<p>Steven 稱之為「小失誤現在創造大失誤後來」。</p>
+<p><strong>為什麼這很關鍵</strong>  </p>
+<p>在一個快速移動、有很多細節的環境中，很容易告訴自己「這個小東西現在不重要，我稍後會修復」。但是這些小東西累積。它們相互作用。它們形成一個基礎，後來的決策會建立在這個不穩定的基礎之上。</p>
+<p><strong>對完美主義和效率的含義</strong>  </p>
+<p>這並不意味著你需要在每一件事上都是完美的。而是意味著你需要在系統上是完整的。比如：</p>
+<ul>
+<li>在財務中：確保每個數字都被追蹤，即使數字很小</li>
+<li>在溝通中：確保每個人都有相同的理解，即使問題似乎很小</li>
+<li>在流程中：確保每個步驟都被正確執行，即使一個步驟似乎是瑣碎的</li>
+</ul>
+<p>Steven 的建議是在前期花費比看起來必要的更多時間在「小東西」上。這會從後來節省指數級別的時間。</p>
+<hr>
+<h2 id="15--失敗生態-如何比競爭對手失敗得更多">15. 失敗生態：如何比競爭對手失敗得更多</h2>
+<p>這是 Steven 最反直覺的論述之一。</p>
+<p><strong>為什麼更多的失敗導致成功</strong>  </p>
+<p>如果成功來自於正確的決策和行動，那麼更多的嘗試和更多的失敗會給你更多學習實驗的機會。</p>
+<p>Steven 引用了創新者和創業家的數據：最成功的人不是失敗最少的人。他們是失敗最多的人。為什麼？因為他們嘗試的次數最多。</p>
+<p><strong>失敗作為數據</strong>  </p>
+<p>Steven 框架化失敗不是作為缺點，而是作為數據。每次失敗都是一個實驗，告訴你什麼行不通。如果你能更快地失敗、更頻繁地失敗，你會更快地積累數據，指向成功。</p>
+<p><strong>為什麼競爭者往往不這樣做</strong>  </p>
+<p>大多數人和組織因為害怕失敗而限制他們的嘗試。他們花費大量時間計劃，希望得到它的權利。Steven 的方法是相反的：花最少的時間計劃，花最多的時間嘗試和失敗。</p>
+<p><strong>失敗者的優勢</strong>  </p>
+<p>一個願意失敗更多的人自動獲得優勢，因為他的競爭者在策略上被限制在安全的選擇。而失敗者正在實驗。</p>
+<p><strong>如何培養失敗的文化</strong>  </p>
+<p>在個人和組織層面，Steven 建議：</p>
+<ol>
+<li>設定期望，失敗是進度的一部分</li>
+<li>從失敗中快速學習，然後繼續前進，而不是反復咀嚼失敗</li>
+<li>記錄失敗，這樣你可以看到模式而不是重複相同的失敗</li>
+<li>公開慶祝有意義的失敗，而不是隱藏它們</li>
+</ol>
+<hr>
+<h2 id="16--壓力的再框架化-特權而不是負擔">16. 壓力的再框架化：特權而不是負擔</h2>
+<p>Steven 進入了關於如何看待壓力和困難的心理轉變。</p>
+<p><strong>壓力是無可避免的</strong>  </p>
+<p>如果你試著做任何有意義的事，你會經歷壓力。無法避免。</p>
+<p><strong>壓力作為標記</strong>  </p>
+<p>相反，Steven 建議將壓力視為有正面含義的信號。當你感到壓力時，它意味著：</p>
+<ol>
+<li>你在做一個相對於你當前能力的事 — 你在成長邊界</li>
+<li>你關心結果 — 這表示承諾</li>
+<li>你有責任感 — 這表示你被信任</li>
+</ol>
+<p><strong>壓力 vs. 嚴重性困境</strong>  </p>
+<p>Steven 區分了「壓力」（來自於重要項目和承諾）和「嚴重性」（來自於困難環境、損失、或危機）。並非所有的困難都是壓力；有些是嚴重性。</p>
+<p>在商業中，一個快速成長的公司面臨壓力（有太多要做）。一個正在衰退的公司面臨嚴重性（有經濟威脅）。兩者都是困難，但心理上它們是不同的。</p>
+<p><strong>將壓力重新標記為特權</strong>  </p>
+<p>Steven 的根本轉變是將壓力重新框架化為特權。「我有幸在一個困難的項目上工作」而不是「我對這個項目感到壓力」。</p>
+<p>這改變了你的神經系統對壓力激素的反應。它不是威脅反應，而是性能反應。研究表明，以這種方式框架化壓力實際上改善了在壓力下的表現。</p>
+<hr>
+<h2 id="17--技能是無價值的-背景是有價值的">17. 技能是無價值的，背景是有價值的</h2>
+<p>Steven 提出了一個對「發展技能」文化的根本性挑戰。</p>
+<p><strong>為什麼技能本身沒有價值</strong>  </p>
+<p>任何技能都可以被複製。編程技能可以被教。設計技能可以被學習。銷售技能可以被發展。因為任何技能都可以被複製，它的價值趨向於零。</p>
+<p>如果你的主要資產是一項技能，你在與可能以較低成本學習相同技能的人競爭。</p>
+<p><strong>背景是不可複製的資產</strong>  </p>
+<p>背景是什麼？它是你的：</p>
+<ul>
+<li>獨特的經驗組合</li>
+<li>你所在的網絡</li>
+<li>你的視角和直覺</li>
+<li>你對某個市場、行業或人群的理解</li>
+<li>你的信譽和關係</li>
+</ul>
+<p>一個有特定背景的人——比如說一個在糖果行業工作了十年，知道所有供應商、理解消費者心理、對市場有直覺的人——比一個剛剛學會「銷售技能」的人更有價值。</p>
+<p><strong>背景如何創造槓桿</strong>  </p>
+<p>Steven 的例子：他在廣告、社交媒體和數字營銷領域有背景。他的技能（說話、進行播客）是任何人都可以學習的。但他的背景給了他獨特的視角和網絡。這就是為什麼他的播客成功，而有相同技能的其他人沒有。</p>
+<p><strong>如何構建有價值的背景</strong>  </p>
+<p>在你的職業生涯中，不要只關注學習技能。關注：</p>
+<ol>
+<li>進入有趣的行業或領域</li>
+<li>與有趣的人一起工作，並建立關係</li>
+<li>深入了解一個市場、一個行業或一個人群</li>
+<li>發展對該領域的直覺和觀點</li>
+<li>建立信譽和被信任</li>
+</ol>
+<p>隨著時間的推移，這會給你一個不可複製的背景——這是真實的資產。</p>
+<hr>
+<h2 id="18--紀律的公式-死亡-時間和紀律">18. 紀律的公式：死亡、時間和紀律</h2>
+<p>Steven 提出了一個關於人類動力的深層哲學。</p>
+<p><strong>為什麼人類需要紀律</strong>  </p>
+<p>Steven 認為，人類本質上被死亡的認知所驅動。當我們真正意識到我們的時間是有限的時，我們變得更有意圖。</p>
+<p>但死亡太抽象了，無法成為日常動力的來源。所以它需要被轉化為時間的更具體認識——我有有限的日子、有限的年份要做有意義的事。</p>
+<p><strong>這創造了對紀律的需要</strong>  </p>
+<p>如果時間是有限的，而生活只是發生的時間，那麼你需要紀律來確保你的時間花在與你的價值觀和目標一致的事上。</p>
+<p>紀律不是關於懲罰自己。它是關於尊重時間的稀缺性，並有意地將其分配給重要的事。</p>
+<p><strong>紀律作為自由</strong>  </p>
+<p>這看起來像是悖論，但 Steven 認為紀律實際上創造了自由。一個對自己的時間有紀律的人，能夠在任何事上說「不」，除了他真正在乎的少數事。這比一個任何人要求他做什麼都說「是」的人更自由。</p>
+<p><strong>在實踐中應用紀律公式</strong>  </p>
+<p>Steven 建議定期回到死亡、時間和紀律的連結：</p>
+<ol>
+<li>花時間思考你的有限性（每週或每月一次）</li>
+<li>這會提醒你你的時間是有限的</li>
+<li>這會激勵你對你的紀律有更多的意圖</li>
+<li>這會強化你說「不」的能力，除了真正重要的</li>
+</ol>
+<hr>
+<h1 id="IV--團隊與組織-集體行動">IV. 團隊與組織：集體行動</h1>
+<h2 id="19---誰-比-怎樣-更重要">19. 「誰」比「怎樣」更重要</h2>
+<p>這是 Steven 在領導和組織方面的核心原則。</p>
+<p><strong>為什麼傳統的「怎樣」思維失敗</strong>  </p>
+<p>大多數管理方法論關注「怎樣做」。如何組織工作流程、如何設定流程、如何優化績效。這很合理，但 Steven 認為它完全無視了最重要的變數：人。</p>
+<p><strong>正確的人可以解決任何「怎樣」問題</strong>  </p>
+<p>如果你有合適的人——聰明、有動力、與你一致的人——他們會弄清楚如何做。他們會創新。他們會適應。他們會超越預期。</p>
+<p><strong>錯誤的人，即使有完美的流程，也會失敗</strong>  </p>
+<p>反過來說，最複雜的流程、最好的計劃，如果由錯誤的人執行，會失敗。</p>
+<p><strong>找「誰」如何改變一切</strong>  </p>
+<p>Steven 的建議完全改變了招聘和構建團隊的方法：</p>
+<ol>
+<li><strong>把絕大部分時間花在「誰」上</strong>：不要先決定工作應該如何做。先決定誰應該做它。</li>
+</ol>
+<ol>
+<li><strong>質量 vs. 數量</strong>：一個偉大的人可以替代五個平凡的人。所以，與其招聘五個平凡的人來做某項工作，不如花時間找到一個偉大的人，即使需要更長時間。</li>
+</ol>
+<ol>
+<li><strong>一致性很關鍵</strong>：一個與你的價值觀和目標一致的人，即使他需要學習技能，也會更有價值，超過一個有所有技能但不一致的人。</li>
+</ol>
+<ol>
+<li><strong>招聘的進展速度</strong>：Steven 建議招聘的速度應該和解雇的速度一樣快。如果你錯了，迅速改正。不要帶著不適合的人太長時間。</li>
+</ol>
+<hr>
+<h2 id="20--文化是誰被容納-誰被排斥">20. 文化是誰被容納，誰被排斥</h2>
+<p>Steven 進入了組織文化的一個經常被誤解的面向。</p>
+<p><strong>文化不是你說的，而是你做的</strong>  </p>
+<p>公司可以有精美的價值觀聲明，但如果他們的行為與之不符，他們的實際文化就是他們的行為。</p>
+<p><strong>文化被定義在邊界</strong>  </p>
+<p>真正的文化不是在已經被接納的人中看到的。它是在邊界上看到的——誰被容納，誰被排除。</p>
+<p>當一個組織說「我們重視多樣性」但實際上排斥不符合某種型態的人時，實際的文化信息是清晰的：「我們說我們重視多樣性，但我們不容納它。」</p>
+<p><strong>招聘作為文化信號</strong>  </p>
+<p>Steven 認為招聘決定是最強有力的文化信號。當你招聘一個不適合傳統型的人，但他很偉大，你發送一個信號：「在這裡，能力和一致性勝過一致性」。</p>
+<p>當你不招聘一個看起來很有資格但與你的文化不符的人時，你發送一個信號：「我們真的在乎文化適合度」。</p>
+<p><strong>文化的黑暗面</strong>  </p>
+<p>重要的是，Steven 也警告文化可能變得排斥性和有害。一個強大的文化可以變成一個狹隘的、排斥那些不同的人的狹小圈子。</p>
+<p>他認為領導者有責任確保文化是排他性地關於價值觀和一致性，而不是關於外表、背景或人口統計。</p>
+<hr>
+<h2 id="21--進展的力量-為什麼小贏很重要">21. 進展的力量：為什麼小贏很重要</h2>
+<p>Steven 關注了一個經常被忽視的動力來源。</p>
+<p><strong>進展是人類的心理燃料</strong>  </p>
+<p>當人們看到進展時，他們感到被激勵。進展給予希望和意義感。進展是什麼讓人類能夠從事大型、多年的項目。</p>
+<p><strong>為什麼大目標失敗</strong>  </p>
+<p>很多組織和個人設定大的遠期目標，但在多年沒有看到進展時變得沮喪。目標對於方向很有用，但對於日常動力沒有用。</p>
+<p><strong>小贏的重要性</strong>  </p>
+<p>相反，Steven 建議專注於創造小的、可見的進展的文化。每週的贏。每月的里程碑。每季度的成就。</p>
+<p>這些小贏做兩件事：</p>
+<ol>
+<li>它們給動力——人們看到事情在移動</li>
+<li>它們給信息——進展的方向告訴你是否朝著目標方向前進</li>
+</ol>
+<p><strong>在組織中應用進展文化</strong>  </p>
+<p>在建立團隊和組織中：</p>
+<ol>
+<li>將大目標分解為小的、可實現的里程碑</li>
+<li>公開追蹤進展（無論是在看板上還是在會議中）</li>
+<li>慶祝小贏，即使它們似乎很小</li>
+<li>使用進展的可視性作為動力和對齊的工具</li>
+</ol>
+<hr>
+<h2 id="22--傳達願景-不是恐懼">22. 傳達願景，不是恐懼</h2>
+<p>Steven 區分了兩種領導風格。</p>
+<p><strong>基於恐懼的領導</strong>  </p>
+<p>一些領導者通過製造恐懼來激勵：失業的恐懼、失敗的恐懼、競爭對手的恐懼、經濟不確定性。</p>
+<p>這在短期內可能有效——人們會更努力工作來避免威脅。但它在幾個重要的方面失敗：</p>
+<ol>
+<li>它不可持續——人們最終會筋疲力盡或變得麻木</li>
+<li>它吸引了錯誤的人——害怕的人和有才華的人是不同的</li>
+<li>它抑制了創新——害怕的人不會冒險或試驗</li>
+</ol>
+<p><strong>基於願景的領導</strong>  </p>
+<p>相反，Steven 認為有效的領導是關於傳達清晰的、吸引人的願景——一個人們想要建設的未來。</p>
+<p>這激勵的方式是積極的，而不是消極的。人們不是因為害怕失敗而努力工作，而是因為他們對成功充滿希望。</p>
+<p><strong>願景的三個特性</strong>  </p>
+<p>一個有力的願景是：</p>
+<ol>
+<li><strong>清晰的</strong>——人們理解你在談論什麼樣的未來</li>
+<li><strong>吸引人的</strong>——它對人們有意義，他們想要貢獻</li>
+<li><strong>真實的</strong>——領導者相信它，不是為了激勵而偽造的</li>
+</ol>
+<p><strong>願景與執行</strong>  </p>
+<p>Steven 明確區分願景（想要的未來）與執行（達到那裡的方式）。作為領導者，你需要清晰地傳達願景，但要對執行方式保持靈活。事實上，人們看到願景越清晰，他們對執行的靈活性就越感到自在，因為他們知道最終目標。</p>
+<hr>
+<h2 id="23--邪教心態的力量與危險">23. 邪教心態的力量與危險</h2>
+<p>Steven 引入了一個有爭議的概念。</p>
+<p><strong>什麼是邪教心態</strong>  </p>
+<p>Steven 指的不是危險的邪教，而是一種特定的群體動力：人們被一個共同的目的團結在一起，對領導人或願景充滿信念，願意為了大於自己的東西做出犧牲。</p>
+<p>Apple 的早期員工、SpaceX 的工程師、極端創業團隊的成員——他們都展示了某種「邪教心態」。他們以一種超越典型員工承諾的方式致力於使命。</p>
+<p><strong>為什麼邪教心態有效</strong>  </p>
+<p>當人們由使命而不是工資單驅動時，他們會工作更努力、創新更多、堅持更久。他們成為運動的一部分，而不僅僅是工作的一部分。</p>
+<p><strong>邪教心態的危險</strong>  </p>
+<p>問題是邪教心態可以變得危險。它可以變成盲目服從。它可以變成排斥那些不相信的人。它可以變成被領導人物或組織的利用和虐待。</p>
+<p><strong>負責任的邪教心態</strong>  </p>
+<p>Steven 的建議是領導者應該尋求建立邪教心態（圍繞使命和願景的深刻信念），但對此負責任：</p>
+<ol>
+<li><strong>不要利用它</strong>——使命應該是真實的，對追隨者有真實的好處</li>
+<li><strong>保持透明</strong>——人們應該清楚地看到他們簽署的內容</li>
+<li><strong>允許異議</strong>——即使是邪教成員也應該能夠質疑和討論</li>
+<li><strong>知道邊界</strong>——邪教心態應該不會要求有害的或不道德的行為</li>
+</ol>
+<hr>
+<h1 id="V--整合與應用">V. 整合與應用</h1>
+<h2 id="Steven-的核心方法論框架">Steven 的核心方法論框架</h2>
+<p>經過對 33 條法則和下層論述的審視，一個更深層的方法論框架浮現：</p>
+<p><strong>Steven 的思想堆棧</strong>：</p>
+<ol>
+<li><strong>基礎</strong>（你內部）：你的自我認知、信念系統、心理穩定性</li>
+<li><strong>第二層</strong>（你的展現）：你如何講述你自己、你的敘事、你的差異化</li>
+<li><strong>第三層</strong>（你的決策）：你如何思考困難、你對失敗的態度、你的紀律</li>
+<li><strong>第四層</strong>（你的影響）：你如何建立團隊、你如何領導、你如何傳達願景</li>
+</ol>
+<p>每一層都建立在前一層之上。無論你多聰明或有技能，如果你的基礎（自我認知和心理穩定性）不穩固，上層都會崩潰。</p>
+<p><strong>為什麼這對零基礎學習者很重要</strong>  </p>
+<p>這意味著如果你正在從零開始學習商業和領導，從基礎開始是至關重要的。不要跳到「如何進行更好的營銷」或「如何談判」。首先要解決你對自己是誰、你相信什麼、你想要什麼的理解。其他一切都會從那裡流出。</p>
+<hr>
+<h2 id="核心主題之間的交叉引用地圖">核心主題之間的交叉引用地圖</h2>
+<h3 id="自我敘事----敘事力量">自我敘事 ←→ 敘事力量</h3>
+<p>你對自己的故事決定了你向世界展現的故事。在這兩個主題中，核心是相同的：故事比事實更強大。所以你的自我敘事（你相信自己是誰）會自動反映在你的公開敘事（人們如何認知你）中。</p>
+<h3 id="信念架構----框架問題">信念架構 ←→ 框架問題</h3>
+<p>你的信念系統決定了你如何框架化現實。一個相信「失敗是學習」的人會框架化失敗為進度的一部分。一個相信「失敗意味著我無能」的人會框架化同樣的失敗為災難。</p>
+<h3 id="古怪行為----差異化">古怪行為 ←→ 差異化</h3>
+<p>你的古怪特性（你無法改變的部分）正好構成了你差異化的基礎。試著像別人一樣只會使你平凡。接受並表達你的古怪會使你獨特。</p>
+<h3 id="心理基礎----決策品質">心理基礎 ←→ 決策品質</h3>
+<p>你的心理穩定性決定了你在壓力下是否能做出清晰的決策。一個心理不穩定的人會在危機下做出反應性的、有時是破壞性的決策。一個穩定的人會冷靜地思考。</p>
+<h3 id="技能無價值----背景有價值">技能無價值 ←→ 背景有價值</h3>
+<p>這創造了一個有趣的含義：不要只追求技能發展。追求進入有趣的環境、與有趣的人工作、深入理解特定的市場。隨著時間的推移，這會給你不可複製的背景。</p>
+<h3 id="誰-比-怎樣-重要----進展的力量">「誰」比「怎樣」重要 ←→ 進展的力量</h3>
+<p>選擇合適的人（誰）創造了環境，小的贏（進展的力量）成為可能。合適的人知道如何在大目標中創建小里程碑，這保持動力。</p>
+<h3 id="願景領導----邪教心態">願景領導 ←→ 邪教心態</h3>
+<p>有力的願景創造了人們願意全心投入的心態。這是為什麼清晰傳達願景是建立高績效文化的關鍵。</p>
+<hr>
+<h2 id="關鍵案例與具體例子">關鍵案例與具體例子</h2>
+<h3 id="Steven-自己的轉折點故事">Steven 自己的轉折點故事</h3>
+<p>Steven 經常引用他自己作為案例。他在學校失敗，被告知他沒有潛力，有注意力問題，不適合傳統路徑。他可能已經接受了「我是失敗者」的身份。</p>
+<p>相反，他重新框架化：他的古怪（難以集中、想法多、容易分心）在創業環境中變成了超級力量。他開始創業和建立業務，當他試著以傳統的「受雇」模式工作時失敗了。</p>
+<p>他的自我敘事從「我是系統失敗者」變成了「我是為了創造而生的人」。這改變了一切。</p>
+<h3 id="Apple-和邪教心態的例子">Apple 和邪教心態的例子</h3>
+<p>Steven 用 Apple 作為邪教心態的例子。Apple 的早期員工被賈伯斯的願景所激勵——「把一個非常個人化的計算機放在每一雙手中」。這個願景讓平凡的工程師做了非凡的工作。</p>
+<p>但他也警告：Apple 的這種文化可能變得排斥性，容納只有「符合」的人。所以甚至強大的願景也需要領導者的謹慎，以確保它不會變成有害的。</p>
+<h3 id="進展和動力">進展和動力</h3>
+<p>Steven 談到他自己的播客成功不是因為第一集很完美，而是因為他建立了進展的文化。每週一集，觀眾看到一致性和進展。隨著時間的推移，一致的進展創造了動力，最終成功。</p>
+<hr>
+<h2 id="實踐應用清單-如何開始應用這些法則">實踐應用清單：如何開始應用這些法則</h2>
+<h3 id="第一級-自我認知-個人-1-個月練習">第一級：自我認知（個人 1 個月練習）</h3>
+<ol>
+<li><strong>映射你的五桶</strong>：寫下對你來說最重要的五個生活領域。按照你認為應該按的順序排列它們。現在看看你實際上在哪裡花時間。這些是否一致？</li>
+</ol>
+<ol>
+<li><strong>重新審視你的自我敘事</strong>：寫下你對自己的故事。你是誰？你從哪裡來？你想要去哪裡？這個故事有多真實？有哪些部分你為了適應而修改了？</li>
+</ol>
+<ol>
+<li><strong>識別你的古怪</strong>：列出你一生都被告知要改變但從未真正改變過的 5-10 個東西。對於每一個，想想它在什麼環境中會變成優勢。</li>
+</ol>
+<h3 id="第二級-敘事與展現-個人-2-個月練習">第二級：敘事與展現（個人 2 個月練習）</h3>
+<ol>
+<li><strong>建構你的個人故事</strong>：基於你真實的背景、努力和現在的位置，創建一個 3-5 分鐘的自我介紹。這應該真實、有趣、包含衝突或轉折。</li>
+</ol>
+<ol>
+<li><strong>識別你的差異化</strong>：你可以做什麼別人沒有做的？（不是做得更好，而是不同。）寫下至少三個不同的角度或方法，你可以帶到你感興趣的任何領域。</li>
+</ol>
+<ol>
+<li><strong>框架練習</strong>：選擇你生活中一個困難的情況。寫下你現在如何框架化它。現在寫下三個替代框架。這改變了什麼？</li>
+</ol>
+<h3 id="第三級-決策與行動-個人-3-個月練習">第三級：決策與行動（個人 3 個月練習）</h3>
+<ol>
+<li><strong>計劃 A 承諾</strong>：選擇一個重要的個人或職業目標。寫下你為什麼相信它。現在寫下「我沒有計劃 B」。你的決策如何改變，知道你已經承諾？</li>
+</ol>
+<ol>
+<li><strong>失敗記錄</strong>：開始記錄你的失敗——不是隱藏它們或反復咀嚼它們，而是作為數據。每個失敗教了你什麼？你在尋找什麼模式？</li>
+</ol>
+<h3 id="第四級-領導和影響-6-個月練習">第四級：領導和影響（6 個月練習）</h3>
+<ol>
+<li><strong>視覺開發</strong>：為你想要創建或領導的東西開發一個清晰的願景。描述一個成功的未來看起來像什麼，不是用數字，而是用你會看到、聽到和感受到的。</li>
+</ol>
+<ol>
+<li><strong>「誰」練習</strong>：如果你領導或影響任何人（即使只是朋友或家人），開始更故意地思考「誰」。你想吸引什麼樣的人？他們必須具備什麼品質（不是技能，而是品質）？</li>
+</ol>
+<hr>
+<h2 id="結論-為什麼這個知識庫對零基礎學習者很重要">結論：為什麼這個知識庫對零基礎學習者很重要</h2>
+<p>Steven Bartlett 的工作對那些想理解現代商業和個人成功本質的任何人都很有價值，特別是對那些沒有傳統商業背景的人。</p>
+<p>他不教你「如何進行更好的營銷」或「如何進行談判」。他教你一些更根本的東西：你如何看待自己決定了你能做什麼，你如何講述你的故事決定了他人如何看待你，你如何做決策決定了你的長期成功。</p>
+<p>對於零基礎學習者，這很有價值，因為它表明重點不是積累技巧。重點是建立穩固的基礎——自我認知、清晰的敘事、健全的決策哲學、有效的領導能力。技巧可以稍後學習。但如果基礎不穩固，你學習的技巧將被你的內在限制所破壞。</p>
+<p>這個知識庫旨在為你提供 Steven 思想的完整地圖，讓你可以隨時返回並應用任何對你當前情況有意義的部分。從自我認知開始。當你對自己有清晰的理解時，其他一切都變成了比較簡單的問題。</p>
+    </div>
+  </main>
+</div>
+
+<script>
+  const mainEl = document.getElementById('main');
+  const navLinks = document.querySelectorAll('#nav-list a');
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  const progressBar = document.getElementById('progress-bar');
+  const contentEl = document.getElementById('content');
+
+  // ── Navigation: goToSection ──────────────────────────────
+  function goToSection(slug) {
+    const target = document.getElementById(slug);
+    if (!target) return;
+    const containerRect = mainEl.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const offset = targetRect.top - containerRect.top + mainEl.scrollTop - 32;
+    mainEl.scrollTo({ top: offset, behavior: 'smooth' });
+    // update active
+    navLinks.forEach(a => a.classList.remove('active'));
+    const activeLink = document.querySelector(`#nav-list a[href="#${slug}"]`);
+    if (activeLink) activeLink.classList.add('active');
+  }
+
+  // Intercept all # links in content
+  contentEl.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    e.preventDefault();
+    const slug = a.getAttribute('href').slice(1);
+    goToSection(slug);
+  });
+
+  // ── Scroll spy ───────────────────────────────────────────
+  const allHeadings = Array.from(contentEl.querySelectorAll('h1[id],h2[id],h3[id]'));
+
+  mainEl.addEventListener('scroll', () => {
+    // progress bar
+    const pct = mainEl.scrollTop / (mainEl.scrollHeight - mainEl.clientHeight);
+    progressBar.style.transform = `scaleX(${pct})`;
+
+    // active nav
+    const scrollTop = mainEl.scrollTop + 60;
+    let current = null;
+    for (const h of allHeadings) {
+      if (h.offsetTop <= scrollTop) current = h;
+    }
+    if (current) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      const id = current.getAttribute('id');
+      const match = document.querySelector(`#nav-list a[href="#${id}"]`);
+      if (match) {
+        match.classList.add('active');
+        // scroll nav to keep active visible
+        const navScroll = match.closest('.nav-scroll');
+        const matchTop = match.offsetTop;
+        const navH = navScroll.clientHeight;
+        const navST = navScroll.scrollTop;
+        if (matchTop < navST + 40 || matchTop > navST + navH - 40) {
+          navScroll.scrollTo({ top: matchTop - navH / 2, behavior: 'smooth' });
+        }
+      }
+    }
+  });
+
+  // ── Search ───────────────────────────────────────────────
+  // Build search index from headings + paragraphs
+  const searchIndex = [];
+  allHeadings.forEach(h => {
+    const section = h;
+    const txt = h.textContent;
+    let preview = '';
+    let sib = h.nextElementSibling;
+    while (sib && !['H1','H2','H3'].includes(sib.tagName)) {
+      if (sib.tagName === 'P') { preview = sib.textContent.slice(0, 80); break; }
+      sib = sib.nextElementSibling;
+    }
+    searchIndex.push({ id: h.id, title: txt, preview, el: section });
+  });
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim();
+    if (!q) { searchResults.style.display = 'none'; clearHighlights(); return; }
+    
+    const matches = searchIndex.filter(item =>
+      item.title.includes(q) || item.preview.includes(q)
+    );
+    
+    // Full text search too
+    const allText = Array.from(contentEl.querySelectorAll('p, li, blockquote'));
+    const textMatches = new Set();
+    allText.forEach(el => {
+      if (el.textContent.includes(q)) {
+        // find nearest heading
+        let prev = el.previousElementSibling;
+        while (prev && !['H1','H2','H3'].includes(prev.tagName)) prev = prev.previousElementSibling;
+        if (prev && prev.id) textMatches.add(prev.id);
+      }
+    });
+    
+    const allMatchIds = new Set([...matches.map(m => m.id), ...textMatches]);
+    const finalMatches = searchIndex.filter(m => allMatchIds.has(m.id));
+
+    if (!finalMatches.length) {
+      searchResults.innerHTML = '<div class="search-no-result">沒有找到相關結果</div>';
+      searchResults.style.display = 'block';
+      return;
+    }
+
+    searchResults.innerHTML = finalMatches.slice(0,12).map(item => `
+      <div class="search-result-item" onclick="goToSection('${item.id}'); searchResults.style.display='none'; searchInput.value='';">
+        <div class="result-title">${item.title}</div>
+        <div class="result-preview">${item.preview}</div>
+      </div>
+    `).join('');
+    searchResults.style.display = 'block';
+    highlightText(q);
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-wrap')) {
+      searchResults.style.display = 'none';
+    }
+  });
+
+  // Highlight
+  function highlightText(q) {
+    clearHighlights();
+    if (!q) return;
+    const walker = document.createTreeWalker(contentEl, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node => {
+      if (!node.textContent.includes(q)) return;
+      const parent = node.parentNode;
+      if (['SCRIPT','STYLE'].includes(parent.tagName)) return;
+      const parts = node.textContent.split(q);
+      const frag = document.createDocumentFragment();
+      parts.forEach((part, i) => {
+        frag.appendChild(document.createTextNode(part));
+        if (i < parts.length - 1) {
+          const mark = document.createElement('mark');
+          mark.textContent = q;
+          frag.appendChild(mark);
+        }
+      });
+      parent.replaceChild(frag, node);
+    });
+  }
+
+  function clearHighlights() {
+    contentEl.querySelectorAll('mark').forEach(m => {
+      m.replaceWith(document.createTextNode(m.textContent));
+    });
+  }
+
+  // Keyboard shortcut: / to focus search
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && e.target !== searchInput) {
+      e.preventDefault();
+      searchInput.focus();
+    }
+    if (e.key === 'Escape') {
+      searchResults.style.display = 'none';
+      searchInput.blur();
+    }
+  });
+
+  // ── Hamburger / Mobile sidebar ───────────────────────────
+  const hamburger = document.getElementById('hamburger');
+  const sidebarEl = document.querySelector('.sidebar');
+  const overlayEl = document.getElementById('overlay');
+
+  function openSidebar() {
+    sidebarEl.classList.add('open');
+    overlayEl.classList.add('open');
+    hamburger.classList.add('open');
+  }
+  function closeSidebar() {
+    sidebarEl.classList.remove('open');
+    overlayEl.classList.remove('open');
+    hamburger.classList.remove('open');
+  }
+  hamburger.addEventListener('click', () => {
+    sidebarEl.classList.contains('open') ? closeSidebar() : openSidebar();
+  });
+  overlayEl.addEventListener('click', closeSidebar);
+
+  // Close sidebar after nav click on mobile
+  navLinks.forEach(a => {
+    a.addEventListener('click', () => {
+      if (window.innerWidth <= 768) closeSidebar();
+    });
+  });
+
+</script>
+
+</body>
+</html>
