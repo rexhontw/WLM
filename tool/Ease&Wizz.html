@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ease and Wizz Plugin Easing Functions</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subheader {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .easing-functions-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .easing-function {
+            margin: 10px;
+            text-align: center;
+            width: 200px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .easing-function h3 {
+            margin-top: 0;
+        }
+        .explanation {
+            font-size: 10px;
+            fill: #333;
+        }
+    </style>
+</head>
+<body><script src="superhi.js"></script>
+    <div class="page-header">
+        <h1>Ease and Wizz Plugin Easing Functions</h1>
+        <p class="subheader">Visual demonstration of various easing functions available in the Ease and Wizz plugin for After Effects</p>
+    </div>
+    <div class="easing-functions-container" id="easing-functions-container"></div>
+
+<script>
+// Easing functions to visualize with explanations
+const easingFunctions = [
+    { name: "Linear", ease: d3.easeLinear, explanation: "Constant speed from start to end." },
+    { name: "Quad In", ease: d3.easeQuadIn, explanation: "Accelerates from zero velocity." },
+    { name: "Quad Out", ease: d3.easeQuadOut, explanation: "Decelerates to zero velocity." },
+    { name: "Quad In-Out", ease: d3.easeQuadInOut, explanation: "Acceleration until halfway, then deceleration." },
+    { name: "Cubic In", ease: d3.easeCubicIn, explanation: "Starts slow, then accelerates quickly." },
+    { name: "Cubic Out", ease: d3.easeCubicOut, explanation: "Starts fast, then decelerates slowly." },
+    { name: "Cubic In-Out", ease: d3.easeCubicInOut, explanation: "Slow start and end, fast in the middle." },
+    { name: "Elastic In", ease: d3.easeElasticIn, explanation: "Overshoots start before settling." },
+    { name: "Elastic Out", ease: d3.easeElasticOut, explanation: "Overshoots end before settling." },
+    { name: "Elastic In-Out", ease: d3.easeElasticInOut, explanation: "Overshoots both start and end." },
+    { name: "Bounce In", ease: d3.easeBounceIn, explanation: "Bounces at the start." },
+    { name: "Bounce Out", ease: d3.easeBounceOut, explanation: "Bounces at the end." },
+    { name: "Bounce In-Out", ease: d3.easeBounceInOut, explanation: "Bounces at both start and end." },
+    { name: "Back In", ease: d3.easeBackIn, explanation: "Slightly overshoots start, then comes back." },
+    { name: "Back Out", ease: d3.easeBackOut, explanation: "Slightly overshoots end, then settles." },
+    { name: "Back In-Out", ease: d3.easeBackInOut, explanation: "Overshoots both start and end slightly." },
+    { name: "Sine In", ease: d3.easeSinIn, explanation: "Gradual acceleration from zero velocity." },
+    { name: "Sine Out", ease: d3.easeSinOut, explanation: "Gradual deceleration to zero velocity." },
+    { name: "Sine In-Out", ease: d3.easeSinInOut, explanation: "Gentle acceleration then deceleration." },
+    { name: "Expo In", ease: d3.easeExpIn, explanation: "Slow start, then rapid acceleration." },
+    { name: "Expo Out", ease: d3.easeExpOut, explanation: "Rapid deceleration to a slow end." },
+    { name: "Expo In-Out", ease: d3.easeExpInOut, explanation: "Rapid acceleration and deceleration." },
+];
+
+// SVG dimensions
+const width = 200;
+const height = 120; // Increased height to accommodate explanation
+const margin = { top: 20, right: 20, bottom: 40, left: 20 };
+
+// Scales
+const xScale = d3.scaleLinear().domain([0, 1]).range([margin.left, width - margin.right]);
+const yScale = d3.scaleLinear().domain([0, 1]).range([height - margin.bottom, margin.top]);
+
+// Line generator
+const lineGenerator = d3.line()
+    .x(d => xScale(d[0]))
+    .y(d => yScale(d[1]));
+
+// Container for all easing function graphs
+const container = d3.select("#easing-functions-container")
+    .selectAll(".easing-function")
+    .data(easingFunctions)
+    .enter()
+    .append("div")
+    .attr("class", "easing-function");
+
+// Append titles
+container.append("h3")
+    .text(d => d.name);
+
+// Create SVGs
+const svg = container.append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("border", "1px solid #ccc");
+
+// Create a group for the permanent trail (below other elements)
+const permanentTrailGroup = svg.append("g").attr("class", "permanent-trail");
+
+// Append axes
+svg.append("g")
+    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .call(d3.axisBottom(xScale).ticks(5));
+
+svg.append("g")
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(yScale).ticks(5));
+
+// Add animation with trail
+svg.each(function(d) {
+    const svgElement = d3.select(this);
+    
+    // Calculate the full path
+    const fullPath = Array.from({ length: 101 }, (_, i) => {
+        const t = i / 100;
+        return [t, d.ease(t)];
+    });
+
+    // Draw the permanent trail
+    const permanentTrailPath = svgElement.select(".permanent-trail").append("path")
+        .attr("fill", "none")
+        .attr("stroke", "rgba(255, 0, 0, 0.1)")
+        .attr("stroke-width", 2)
+        .attr("d", lineGenerator(fullPath));
+
+    const trailPath = svgElement.append("path")
+        .attr("fill", "none")
+        .attr("stroke", "rgba(255, 0, 0, 0.3)")
+        .attr("stroke-width", 2);
+
+    const circle = svgElement.append("circle")
+        .attr("r", 5)
+        .attr("fill", "red");
+
+    // Add explanation text
+    svgElement.append("text")
+        .attr("class", "explanation")
+        .attr("x", width / 2)
+        .attr("y", height - 5)
+        .attr("text-anchor", "middle")
+        .text(d.explanation);
+
+    const trail = [];
+
+    function animate() {
+        const duration = 2000;
+        const startTime = Date.now();
+
+        function step() {
+            const progress = (Date.now() - startTime) / duration;
+            if (progress < 1) {
+                const t = d.ease(progress);xScale(progress);
+                //const x = xScale(progress);
+                const x = xScale(t);
+                const y = 50;
+                
+                circle.attr("cx", x).attr("cy", y);
+                trail.push([progress, t]);
+                if (trail.length > 50) trail.shift();
+                trailPath.attr("d", lineGenerator(trail));
+
+                requestAnimationFrame(step);
+            } else {
+                // Reset the circle and temporary trail
+                circle.attr("cx", xScale(0)).attr("cy", yScale(d.ease(0)));
+                trail.length = 0;
+                trailPath.attr("d", "");
+                
+                setTimeout(animate, 100);
+            }
+        }
+
+        requestAnimationFrame(step);
+    }
+
+    animate();
+});
+</script>
+</body>
+</html>
